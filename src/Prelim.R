@@ -36,6 +36,7 @@ geneExps["SREBF1"] <- "10002908270";
 geneExps["PER1"] <- "10002906335";
 geneExps["PER2"] <- "501035";
 geneExps["PER3"] <- "501565";
+geneExps["MYOC"] <- "10002903431";
 phenos["Fat.wt"] <- "Fat.wt";
 phenos["GLU.4wk"] <- "GLU.4wk";
 phenos["GLU.6wk"] <- "GLU.6wk";
