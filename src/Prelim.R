@@ -51,6 +51,6 @@ graphics.off()
 
 # Pair-Wise plot of all the information
 x11()
-pairs(cbind(adipose.rz[,geneExps], log(phenotypes[,phenos])), labels=c(names(geneExps), names(phenos)), upper.panel=panel.cor, diag.panel=panel.hist)
+pairs(cbind(adipose.rz[,geneExps], log(phenotypes[,phenos])), main="Adipose", labels=c(names(geneExps), names(phenos)), upper.panel=panel.cor, diag.panel=panel.hist)
 x11()
-pairs(cbind(liver.rz[,geneExps], log(phenotypes[,phenos])), labels=c(names(geneExps), names(phenos)), upper.panel=panel.cor, diag.panel=panel.hist)
+pairs(cbind(liver.rz[,geneExps], log(phenotypes[,phenos])), main="Liver", labels=c(names(geneExps), names(phenos)), upper.panel=panel.cor, diag.panel=panel.hist)
