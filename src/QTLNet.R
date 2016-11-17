@@ -27,7 +27,7 @@ Pparg <- islet.rz[,annot$a_gene_id[which(annot$gene_symbol=="Pparg")]]
 f2g$pheno <- cbind(f2g$pheno[,c("MouseNum","Sex","pgm")],phenotypes.rz[c("INS.10wk")],Foxo1,Sirt1, Trp53, Pparg)
 names(f2g$pheno)
 
-setwd("net3-data")
+setwd("net4-data")
 
 # Step 0:  Load qtlnet
 library(qtlnet)
@@ -143,8 +143,11 @@ plot(out1)
 
 save(file="out1.RData", out1)
 
+###################################
+# Opening data from previous runs
+###################################
 setwd("..")
-setwd("net2-data")
+setwd("net3-data")
 load(file="out1.RData")
 plot(out1)
 
