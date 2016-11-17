@@ -3,4 +3,5 @@
 *.RData
 *.Rdata
 *.Ruserdata
-
+*.xlsx
+.Rproj.user
