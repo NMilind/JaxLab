@@ -199,3 +199,7 @@ summary(FBN1.adipose.modelFit)
 # ANOVA OUTPUT
 # Variation accounted for: 7.384149%
 # Model: y~Chr3+Chr7
+
+# Two Additive QTL
+# Chr3@49.5 cM 
+# Chr7@6.14 cM
