@@ -51,7 +51,7 @@ geneExps["SREBF1"] <- "10002908270";
 #phenos["GLU.4wk"] <- "GLU.4wk";
 #phenos["GLU.6wk"] <- "GLU.6wk";
 #phenos["GLU.8wk"] <- "GLU.8wk";
-f2g$adipose <- cbind(f2g$pheno[,c("MouseNum","Sex","pgm")], cbind(adipose.rz[,geneExps], phenotypes.rz[,phenos]))
+f2g$adipose <- cbind(f2g$pheno[,c("MouseNum","Sex","pgm")], cbind(liver.rz[,geneExps], phenotypes.rz[,phenos]))
 f2g$liver <- cbind(f2g$pheno[,c("MouseNum", "Sex", "pgm")], cbind(liver.rz[,geneExps], phenotypes.rz[,phenos]))
 f2g$pheno <- cbind(f2g$pheno[,c("MouseNum", "Sex", "pgm")], cbind(adipose.rz[,geneExps], phenotypes.rz[,phenos]))
 names(f2g$adipose) <- c(c("MouseNum", "Sex", "pgm"), names(geneExps), names(phenos))
@@ -114,31 +114,149 @@ for (i in 5:length(f2g$pheno)) {
   #plot(f2g.scanAdd, lodcolumn=1, main=paste("FBN1 with Additive Covariate", names(f2g$pheno)[i]))
   #plot(f2g.scanInt, lodcolumn=1, main=paste("FBN1 with Interactive Covariate", names(f2g$pheno)[i]))
   #par(mfrow=c(1,1))
-  x11()
-  plot(f2g.scan1, f2g.scanAdd, f2g.scanInt, lodcolumn=1, main=paste("FBN1 with Additive and Interactive Covariate", names(f2g$pheno)[i]))
+  #x11()
+  par(mfrow=c(3,1))
+  plot(f2g.scan1, lodcolumn=1, main="FBN1")
   add.threshold(f2g.scan1, perms=PERMS[,1], alpha=0.05, lty="dashed", lwd=2, col="red")
   add.threshold(f2g.scan1, perms=PERMS[,1], alpha=0.63, lty="dashed", lwd=2, col="green")
+  plot(f2g.scan1, f2g.scanAdd, lodcolumn=1, main=paste("FBN1 with Additive Covariate", names(f2g$pheno)[i]))
+  add.threshold(f2g.scan1, perms=PERMS[,1], alpha=0.05, lty="dashed", lwd=2, col="red")
+  add.threshold(f2g.scan1, perms=PERMS[,1], alpha=0.63, lty="dashed", lwd=2, col="green")
+  plot(f2g.scan1, f2g.scanInt, lodcolumn=1, main=paste("FBN1 with Interactive Covariate", names(f2g$pheno)[i]))
+  add.threshold(f2g.scan1, perms=PERMS[,1], alpha=0.05, lty="dashed", lwd=2, col="red")
+  add.threshold(f2g.scan1, perms=PERMS[,1], alpha=0.63, lty="dashed", lwd=2, col="green")
+  par(mfrow=c(1,1))
 }
 
-### RUN QTL NET
-FBN1.adipose <- adipose.rz[,annot$a_gene_id[which(annot$gene_symbol=="Fbn1")]]
-SIRT1.adipose <- adipose.rz[,annot$a_gene_id[which(annot$gene_symbol=="Sirt1")]]
-BMAL1.adipose <- adipose.rz[,annot$a_gene_id[which(annot$gene_symbol=="Arntl")]]
-PIK3CG.adipose <- adipose.rz[,annot$a_gene_id[which(annot$gene_symbol=="Pik3cg")]]
-NR1H3.adipose <- adipose.rz[,annot$a_gene_id[which(annot$gene_symbol=="Nr1h3")]]
-NCOR2.adipose <- adipose.rz[,annot$a_gene_id[which(annot$gene_symbol=="Ncor2")]]
-SREBF1.adipose <- adipose.rz[,annot$a_gene_id[which(annot$gene_symbol=="Srebf1")]]
+### SIRT1
+# Additive: None
+# Interactive: ChrX, Chr17, Chr14
+### BMAL1
+# Additive: None
+# Interactive: Chr16, Chr13, Chr10, Chr9
+### PIK3CG
+# Additive: Chr12, ChrX
+# Interactive: Chr12, Chr1, Chr9
+### NR1H3
+# Additive: None
+# Interactive: ChrX, Chr16, Chr5, Chr1
+### NCOR2
+# Additive: None
+# Interactive: Chr9, Chr14, Chr19
+### SREBF1
+# Additive: None
+# Interactive: Chr9, Chr16, ChrX
 
-FBN1.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Fbn1")]]
-SIRT1.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Sirt1")]]
-BMAL1.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Arntl")]]
-PIK3CG.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Pik3cg")]]
-NR1H3.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Nr1h3")]]
-NCOR2.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Ncor2")]]
-SREBF1.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Srebf1")]]
+graphics.off()
+f2g.scanAdd.scans <- c()
+f2g.scanInt.scans <- c()
+for (i in 5:length(f2g$pheno)) {
+  col <- i - 3
+  f2g.scanAdd <- scanone(f2g, pheno.col=4, addcovar=f2g$pheno[,i], method="hk")
+  f2g.scanInt <- scanone(f2g, pheno.col=4, intcovar=f2g$pheno[,i], method="hk")
+  f2g.scanAdd.scans[names(f2g$pheno)[i]] <- f2g.scanAdd
+  f2g.scanInt.scans[names(f2g$pheno)[i]] <- f2g.scanInt
+  chrs <- c()
+  if (col == 2) {
+    chrs <- c("14", "17", "X")
+  }
+  if (col == 3) {
+    chrs <- c("9", "10", "13", "16")
+  }
+  if (col == 4) {
+    chrs <- c("1", "9", "12", "X")
+  }
+  if (col == 5) {
+    chrs <- c("1", "5", "16", "X")
+  }
+  if (col == 6) {
+    chrs <- c("9", "14", "19")
+  }
+  if (col == 7) {
+    chrs <- c("9", "16", "X")
+  }
+  x11()
+  par(mfrow=c(3,1))
+  plot(f2g.scan1, lodcolumn=1, main="FBN1", chr=chrs)
+  add.threshold(f2g.scan1, perms=PERMS[,1], alpha=0.05, lty="dashed", lwd=2, col="red")
+  add.threshold(f2g.scan1, perms=PERMS[,1], alpha=0.63, lty="dashed", lwd=2, col="green")
+  plot(f2g.scan1, f2g.scanAdd, lodcolumn=1, main=paste("FBN1 with Additive Covariate", names(f2g$pheno)[i]), chr=chrs)
+  add.threshold(f2g.scan1, perms=PERMS[,1], alpha=0.05, lty="dashed", lwd=2, col="red")
+  add.threshold(f2g.scan1, perms=PERMS[,1], alpha=0.63, lty="dashed", lwd=2, col="green")
+  plot(f2g.scan1, f2g.scanInt, lodcolumn=1, main=paste("FBN1 with Interactive Covariate", names(f2g$pheno)[i]), chr=chrs)
+  add.threshold(f2g.scan1, perms=PERMS[,1], alpha=0.05, lty="dashed", lwd=2, col="red")
+  add.threshold(f2g.scan1, perms=PERMS[,1], alpha=0.63, lty="dashed", lwd=2, col="green")
+  par(mfrow=c(1,1))
+  print(names(f2g$pheno)[i])
+  print(summary(f2g.scanAdd, perms=PERMS, alpha=0.10, format="tabByCol", ci.function="lodint"))
+  print(summary(f2g.scanInt, perms=PERMS, alpha=0.10, format="tabByCol", ci.function="lodint"))
+}
 
-f2g$pheno <- cbind(f2g$pheno[,c("MouseNum","Sex","pgm")],phenotypes.rz[c("CHOL", "GLU.8wk", "TRIG.8wk", "TG.homogenate", "Liver.wt", "Leptin")],FBN1.adipose, SIRT1.adipose, BMAL1.adipose, PIK3CG.adipose, NR1H3.adipose, NCOR2.adipose, SREBF1.adipose)
-f2g$pheno <- cbind(f2g$pheno[,c("MouseNum","Sex","pgm")],phenotypes.rz[c("CHOL", "GLU.8wk", "TRIG.8wk", "TG.homogenate", "Liver.wt", "Leptin")],FBN1.adipose, BMAL1.adipose)
-f2g$pheno <- cbind(f2g$pheno[,c("MouseNum","Sex","pgm")],FBN1.adipose, SIRT1.adipose, BMAL1.adipose, PIK3CG.adipose, NR1H3.adipose, NCOR2.adipose, SREBF1.adipose)
-f2g$pheno <- cbind(f2g$pheno[,c("MouseNum","Sex","pgm")],FBN1.liver, SIRT1.liver, BMAL1.liver, PIK3CG.liver, NR1H3.liver, NCOR2.liver, SREBF1.liver)
-names(f2g$pheno)
+graphics.off()
+### Common FBN1 Chr3 and Chr7 Peaks
+x11()
+par(mfrow=c(1,2))
+plotPXG(f2g, find.marker(f2g, 3, 49.12), pheno.col="FBN1", main="Chr3 Peak")
+plotPXG(f2g, find.marker(f2g, 7, 6.14), pheno.col="FBN1", main="Chr7 Peak")
+par(mfrow=c(1,1))
+### SIRT1 Interactive ChrX Peak
+x11()
+plotPXG(f2g, find.marker(f2g, "X", 7.98), pheno.col="FBN1", main="SIRT1 Interactive ChrX Peak")
+### PIK3CG Interactive Chr1 and Chr12 Peaks
+x11()
+par(mfrow=c(1,2))
+plotPXG(f2g, find.marker(f2g, 1, 78.64), pheno.col="FBN1", main="PIK3CG Interactive Chr1 Peak")
+plotPXG(f2g, find.marker(f2g, 12, 21.24), pheno.col="FBN1", main="PIK3CG Interactive Chr12 Peak")
+par(mfrow=c(1,1))
+### NR1H3 Interactive Chr1, Chr5, and ChrX Peaks
+x11()
+par(mfrow=c(1,3)) 
+plotPXG(f2g, find.marker(f2g, 1, 74.64), pheno.col="FBN1", main="NR1H3 Interactive Chr1 Peak")
+plotPXG(f2g, find.marker(f2g, 5, 3.80), pheno.col="FBN1", main="NR1H3 Interactive Chr5 Peak")
+plotPXG(f2g, find.marker(f2g, "X", 28.30), pheno.col="FBN1", main="NR1H3 Interactive ChrX Peak")
+par(mfrow=c(1,1))
+### NCOR2 Interactive Chr9, Chr14, and Chr19 Peaks
+x11()
+par(mfrow=c(1,3))
+plotPXG(f2g, find.marker(f2g, 9, 36.00), pheno.col="FBN1", main="NCOR2 Interactive Chr9 Peak")
+plotPXG(f2g, find.marker(f2g, 14, 30.92), pheno.col="FBN1", main="NCOR2 Interactive Chr14 Peak")
+plotPXG(f2g, find.marker(f2g, 19, 25.56), pheno.col="FBN1", main="NCOR2 Interactive Chr19 Peak")
+par(mfrow=c(1,1))
+### SREBF1 Interactive Chr1 and Chr9 Peaks
+x11()
+par(mfrow=c(1,2))
+plotPXG(f2g, find.marker(f2g, 1, 88.35), pheno.col="FBN1", main="SREBF1 Interactive Chr1 Peak")
+plotPXG(f2g, find.marker(f2g, 9, 47.29), pheno.col="FBN1", main="SREBF1 Interactive Chr9 Peak")
+par(mfrow=c(1,1))
+
+x11()
+par(mfrow=c(1,2))
+effectplot(f2g, pheno.col="FBN1", mname1=find.marker(f2g, 3, 49.12), main="FBN1 Chr3 Common Peak")
+effectplot(f2g, pheno.col="FBN1", mname1=find.marker(f2g, 7, 6.14), main="FBN1 Chr7 Common Peak")
+par(mfrow=c(1,1))
+x11()
+effectplot(f2g, pheno.col="FBN1", mname1=find.marker(f2g, "X", 7.98), main="SIRT1 Interactive ChrX Peak")
+x11()
+par(mfrow=c(1,2))
+effectplot(f2g, pheno.col="FBN1", mname1=find.marker(f2g, 1, 78.64), main="PIK3CG Interactive Chr1 Peak")
+effectplot(f2g, pheno.col="FBN1", mname1=find.marker(f2g, 12, 21.24), main="PIK3CG Interactive Chr12 Peak")
+par(mfrow=c(1,1))
+x11()
+par(mfrow=c(1,3)) 
+effectplot(f2g, pheno.col="FBN1", mname1=find.marker(f2g, 1, 74.64), main="NR1H3 Interactive Chr1 Peak")
+effectplot(f2g, pheno.col="FBN1", mname1=find.marker(f2g, 5, 3.80), main="NR1H3 Interactive Chr5 Peak")
+effectplot(f2g, pheno.col="FBN1", mname1=find.marker(f2g, "X", 28.30), main="NR1H3 Interactive ChrX Peak")
+par(mfrow=c(1,1))
+x11()
+par(mfrow=c(1,3))
+effectplot(f2g, pheno.col="FBN1", mname1=find.marker(f2g, 9, 36.00), main="NCOR2 Interactive Chr9 Peak")
+effectplot(f2g, pheno.col="FBN1", mname1=find.marker(f2g, 14, 30.92), main="NCOR2 Interactive Chr14 Peak")
+effectplot(f2g, pheno.col="FBN1", mname1=find.marker(f2g, 19, 25.56), main="NCOR2 Interactive Chr19 Peak")
+par(mfrow=c(1,1))
+x11()
+par(mfrow=c(1,2))
+effectplot(f2g, pheno.col="FBN1", mname1=find.marker(f2g, 1, 88.35), main="SREBF1 Interactive Chr1 Peak")
+effectplot(f2g, pheno.col="FBN1", mname1=find.marker(f2g, 9, 47.29), main="SREBF1 Interactive Chr9 Peak")
+par(mfrow=c(1,1))
+
+effectplot(f2g, pheno.col="FBN1", mname1=find.marker(f2g, 14, 32.0), mname2=find.marker(f2g, 6, 28.0))
