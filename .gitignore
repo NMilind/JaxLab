@@ -5,3 +5,4 @@
 *.Ruserdata
 *.xlsx
 .Rproj.user
+configuration.R
