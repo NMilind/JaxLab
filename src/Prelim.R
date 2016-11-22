@@ -39,6 +39,7 @@ geneExps["PIK3CG"] <- "10002918744";
 geneExps["NR1H3"] <- "505407";
 geneExps["NCOR2"] <- "503860";
 geneExps["SREBF1"] <- "10002908270";
+geneExps["TGFB1"] <- "507240";
 #phenos["Fat.wt"] <- "Fat.wt";
 #phenos["LDL"] <- "LDL";
 #phenos["HDL"] <- "HDL";
