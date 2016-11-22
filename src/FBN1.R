@@ -15,7 +15,7 @@ library(qtl)
 library(ggplot2)
 
 # Set working directory
-setwd("C:/Users/Nikhil/Desktop/JaxLab")
+setwd("~/Desktop/JaxLab")
 
 # Import generic functions
 source("src/important_func.R")
@@ -327,3 +327,26 @@ print(CI.Chr8[c(1,3),2])
 #FBN1.liver.scan3 <- scantwo(f2g, pheno.col=4, addcovar=sex, method="hk")
 #save(file="data/FBN1-FBN1.liver.scan3.RData", FBN1.liver.scan3)
 load(file="data/FBN1-FBN1.liver.scan3.RData")
+
+# Summary of results from scan
+summary(FBN1.liver.scan3, c(9.1, 7.1, 6.3, 6.3, 3.3), "best")
+#        pos1f pos2f lod.full lod.fv1 lod.int     pos1a pos2a lod.add lod.av1
+# c8:c15  27.9  43.8     7.83    4.01   0.561      27.9  43.8    7.27    3.45
+
+graphics.off()
+
+# Plot the results of the two-qtl scan
+x11()
+plot(FBN1.liver.scan3)
+
+# Make a QTL Model
+FBN1.liver.model <- makeqtl(f2g, c("8","15"), c(27.9, 43.8))
+FBN1.liver.modelFit <- fitqtl(f2g, pheno.col=4, qtl=FBN1.liver.model, formula=y~Q1+Q2)
+summary(FBN1.liver.modelFit)
+# ANOVA OUTPUT
+# Variation accounted for: 6.232538%
+# Model: y~Chr8+Chr15
+
+# Two Additive QTL
+# Chr8@27.9 cM 
+# Chr15@43.8 cM
