@@ -203,3 +203,121 @@ summary(FBN1.adipose.modelFit)
 # Two Additive QTL
 # Chr3@49.5 cM 
 # Chr7@6.14 cM
+
+#################################################
+## 6: ENVIRONMENTAL SETUP                      ##
+#################################################
+
+# Clear environmental variables
+rm(list=ls())
+
+# Import required libraries
+library(qtl)
+library(ggplot2)
+
+# Set working directory
+setwd("~/Desktop/JaxLab")
+
+# Import generic functions
+source("src/important_func.R")
+
+# Import BTBR data
+load(file="data/BTBR.clean.data.Rdata")
+
+#################################################
+## 7: CROSS SETUP (HEPATIC)                    ##
+#################################################
+
+# Print a summary of the BTBR cross
+summary(f2g)
+# Print the names of the current phenotypes
+names(f2g$pheno)
+# Use only MouseNum, Sex, and pgm for analytics
+f2g$pheno <- f2g$pheno[,c("MouseNum", "Sex", "pgm")]
+# Check to make sure only three columns are conserved
+names(f2g$pheno)
+# Add FBN1 as a phenotype
+FBN1.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Fbn1")]]
+f2g$pheno <- cbind(f2g$pheno[,names(f2g$pheno)], FBN1.liver)
+#  Check to make sure FBN1 is added
+names(f2g$pheno)
+
+#################################################
+## 8: SCANS                                    ##
+#################################################
+
+f2g <- calc.genoprob(f2g, step=1, stepwidth="fixed", map.function="c-f", err=0.002)
+f2g <- sim.geno(f2g, step=1, stepwidth="fixed", map.function="c-f", err=0.002)
+
+sex <- as.numeric(f2g$pheno$Sex) - 1
+
+# Permute through the cross to create baseline LOD score levels
+#FBN1.liver.perms <- scanone(f2g, pheno.col=4, addcovar=sex, method="hk", n.perm=1000, perm.Xsp=TRUE)
+#save(file="data/FBN1-FBN1.liver.perms.RData", FBN1.liver.perms)
+load(file="data/FBN1-FBN1.liver.perms.RData")
+
+# Scan for FBN1 in the cross
+FBN1.liver.scan1 <- scanone(f2g, pheno.col=4, addcovar=sex, method="hk")
+
+# Plot the LOD scan with thresholds from the permutations
+x11()
+plot(FBN1.liver.scan1, lodcolumn=1, main="FBN1 LOD for Variation across Mouse Genome")
+add.threshold(FBN1.liver.scan1, perms=FBN1.liver.perms, alpha=0.05, lty="dashed", lwd=1, col="green")
+add.threshold(FBN1.liver.scan1, perms=FBN1.liver.perms, alpha=0.10, lty="dashed", lwd=1, col="orange")
+add.threshold(FBN1.liver.scan1, perms=FBN1.liver.perms, alpha=0.63, lty="dashed", lwd=1, col="red")
+# Interesting Peaks: Chr8, Chr12, and Chr15
+
+# Tabulate and print LOD peaks where alpha=0.05
+summary(FBN1.liver.scan1, perms=FBN1.liver.perms, alpha=0.05, format="tabByCol", ci.function="lodint")
+
+# Tabulate and print LOD peaks where alpha=0.63
+summary(FBN1.liver.scan1, perms=FBN1.liver.perms, alpha=0.63, format="tabByCol", ci.function="lodint")
+# OUTPUT
+#            chr   pos ci.low ci.high  lod
+# rs13479718   8 28.03  17.92    54.9 3.82
+# rs13481295  12  4.86   4.77    34.6 2.52
+# rs13482700  15 43.63  31.94    55.7 3.24
+
+#################################################
+## 9: MULTIPLE QTL ANALYSIS                    ##
+#################################################
+
+# Scan with Chr15 QTL as a covar to increase power on Chr8
+FBN1.liver.scan2 <- scanone(f2g, pheno.col=4, addcovar=f2g$geno$'15'$data[,find.marker(f2g, chr=15, pos=43.63)], method="hk")
+
+# Plot scan results
+x11()
+plot(FBN1.liver.scan2, lodcolumn=1, main="FBN1 LOD for Variation across Mouse Genome")
+add.threshold(FBN1.liver.scan2, perms=FBN1.liver.perms, alpha=0.05, lty="dashed", lwd=1, col="green")
+add.threshold(FBN1.liver.scan2, perms=FBN1.liver.perms, alpha=0.10, lty="dashed", lwd=1, col="orange")
+add.threshold(FBN1.liver.scan2, perms=FBN1.liver.perms, alpha=0.63, lty="dashed", lwd=1, col="red")
+# Major Peaks: Chr8
+# Interesting Peaks: Chr12
+
+# Tabulate and print LOD peaks where alpha=0.05
+summary(FBN1.liver.scan2, perms=FBN1.liver.perms, alpha=0.05, format="tabByCol", ci.function="lodint")
+# OUTPUT
+#            chr pos ci.low ci.high  lod
+# rs13479719   8  28   19.9    49.3 4.31
+
+# Tabulate and print LOD peaks where alpha=0.63
+summary(FBN1.liver.scan2, perms=FBN1.liver.perms, alpha=0.63, format="tabByCol", ci.function="lodint")
+# OUTPUT
+#            chr   pos ci.low ci.high  lod
+# rs13479719   8 28.03  19.92    49.3 4.31
+# rs13481295  12  4.86   4.77    33.5 3.10
+
+# Compare phenotypes to genotypes at identified QTL
+x11()
+plot.pxg(f2g, find.marker(f2g, chr=8, pos=28), pheno.col=4, main="FBN1 QTL Chr8@28.00 cM")
+
+# Effect plots of the QTL
+x11()
+effectplot(f2g, pheno.col=4, mname1=find.marker(f2g, chr=8, pos=28), main="FBN1 QTL Chr8@28.00 cM")
+
+# Obtain confidence intervals for QTL LOD peaks
+x11()
+CI.Chr8 <- bayesint(FBN1.liver.scan2, chr=8, prob=0.95)
+plot(FBN1.liver.scan2, chr=8, lodcolumn=1, main="Confidence Interval for Chr8")
+lines(x=CI.Chr8[c(1,3),2], y=c(0,0), type="l", col="#00FF00", lwd=4)
+print(CI.Chr8[c(1,3),2])
