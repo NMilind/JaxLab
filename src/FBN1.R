@@ -15,7 +15,7 @@ library(qtl)
 library(ggplot2)
 
 # Set working directory
-setwd("~/Desktop/JaxLab")
+setwd("C:/Users/Nikhil/Desktop/JaxLab")
 
 # Import generic functions
 source("src/important_func.R")
