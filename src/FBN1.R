@@ -321,3 +321,9 @@ CI.Chr8 <- bayesint(FBN1.liver.scan2, chr=8, prob=0.95)
 plot(FBN1.liver.scan2, chr=8, lodcolumn=1, main="Confidence Interval for Chr8")
 lines(x=CI.Chr8[c(1,3),2], y=c(0,0), type="l", col="#00FF00", lwd=4)
 print(CI.Chr8[c(1,3),2])
+
+# Run a two-qtl scan over f2g
+#gc()
+#FBN1.liver.scan3 <- scantwo(f2g, pheno.col=4, addcovar=sex, method="hk")
+#save(file="data/FBN1-FBN1.liver.scan3.RData", FBN1.liver.scan3)
+load(file="data/FBN1-FBN1.liver.scan3.RData")
