@@ -3,6 +3,6 @@
 *.RData
 *.Rdata
 *.Ruserdata
-*.xlsx
 .Rproj.user
 configuration.R
+BTBR_Phenotype_Dictionary.xlsx

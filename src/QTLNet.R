@@ -29,6 +29,7 @@ PIK3CG.adipose <- adipose.rz[,annot$a_gene_id[which(annot$gene_symbol=="Pik3cg")
 NR1H3.adipose <- adipose.rz[,annot$a_gene_id[which(annot$gene_symbol=="Nr1h3")]]
 NCOR2.adipose <- adipose.rz[,annot$a_gene_id[which(annot$gene_symbol=="Ncor2")]]
 SREBF1.adipose <- adipose.rz[,annot$a_gene_id[which(annot$gene_symbol=="Srebf1")]]
+TGFB1.adipose <- adipose.rz[,annot$a_gene_id[which(annot$gene_symbol=="Tgfb1")]]
 
 FBN1.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Fbn1")]]
 SIRT1.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Sirt1")]]
@@ -37,15 +38,15 @@ PIK3CG.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Pik3cg")]]
 NR1H3.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Nr1h3")]]
 NCOR2.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Ncor2")]]
 SREBF1.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Srebf1")]]
-TGBF1.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Tgfb1")]]
+TGFB1.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Tgfb1")]]
 
 f2g$pheno <- cbind(f2g$pheno[,c("MouseNum","Sex","pgm")],phenotypes.rz[c("CHOL", "GLU.8wk", "TRIG.8wk", "TG.homogenate", "Liver.wt", "Leptin")],FBN1.adipose, SIRT1.adipose, BMAL1.adipose, PIK3CG.adipose, NR1H3.adipose, NCOR2.adipose, SREBF1.adipose)
 f2g$pheno <- cbind(f2g$pheno[,c("MouseNum","Sex","pgm")],phenotypes.rz[c("CHOL", "GLU.8wk", "TRIG.8wk", "TG.homogenate", "Liver.wt", "Leptin")],FBN1.adipose, BMAL1.adipose)
-f2g$pheno <- cbind(f2g$pheno[,c("MouseNum","Sex","pgm")],FBN1.adipose, SIRT1.adipose, BMAL1.adipose, PIK3CG.adipose, NR1H3.adipose, NCOR2.adipose, SREBF1.adipose)
-f2g$pheno <- cbind(f2g$pheno[,c("MouseNum","Sex","pgm")],FBN1.liver, SIRT1.liver, BMAL1.liver, PIK3CG.liver, NR1H3.liver, NCOR2.liver, SREBF1.liver)
+f2g$pheno <- cbind(f2g$pheno[,c("MouseNum","Sex","pgm")],FBN1.adipose, SIRT1.adipose, BMAL1.adipose, PIK3CG.adipose, NR1H3.adipose, NCOR2.adipose, SREBF1.adipose, TGFB1.adipose)
+f2g$pheno <- cbind(f2g$pheno[,c("MouseNum","Sex","pgm")],FBN1.liver, SIRT1.liver, BMAL1.liver, PIK3CG.liver, NR1H3.liver, NCOR2.liver, SREBF1.liver, TGFB1.liver)
 names(f2g$pheno)
 
-setwd("net4-data")
+setwd("net6-data")
 
 # Step 0:  Load qtlnet
 library(qtlnet)
@@ -165,7 +166,8 @@ save(file="out1.RData", out1)
 # Opening data from previous runs
 ###################################
 setwd("..")
-setwd("net3-data")
+setwd("net5-data")
 load(file="out1.RData")
+summary(out1)
 plot(out1)
 
