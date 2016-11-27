@@ -92,6 +92,11 @@ effectplot(f2g, pheno.col=4, mname1=find.marker(f2g, chr=7, pos=6.14), main="FBN
 effectplot(f2g, pheno.col=4, mname1=find.marker(f2g, chr="X", pos=8.60), main="FBN1 QTL ChrX@8.60 cM")
 par(mfrow=c(1,1))
 
+# Effect plots by sex
+x11()
+effectplot(f2g, pheno.col=4, mname1="Sex", mark1=f2g$pheno$Sex, mname2=find.marker(f2g, chr=3, pos=49.12), main="FBN1 QTL Chr3@49.12 cM")
+effectplot(f2g, pheno.col=4, mname1="Sex", mark1=f2g$pheno$Sex, mname2=find.marker(f2g, chr=7, pos=6.14), main="FBN1 QTL Chr7@6.14 cM")
+
 # Obtain confidence intervals for QTL LOD peaks
 x11()
 par(mfrow=c(2,2))
@@ -194,21 +199,7 @@ summary(FBN1.adipose.modelFit)
 ## 6: ENVIRONMENTAL SETUP                      ##
 #################################################
 
-# Clear environmental variables
-rm(list=ls())
-
-# Import required libraries
-library(qtl)
-library(ggplot2)
-
-# Set working directory
-setwd("~/Desktop/JaxLab")
-
-# Import generic functions
-source("src/important_func.R")
-
-# Import BTBR data
-load(file="data/BTBR.clean.data.Rdata")
+#source("src/configuration.R")
 
 #################################################
 ## 7: CROSS SETUP (HEPATIC)                    ##
@@ -273,7 +264,7 @@ FBN1.liver.scan2 <- scanone(f2g, pheno.col=4, addcovar=f2g$geno$'15'$data[,find.
 
 # Plot scan results
 x11()
-plot(FBN1.liver.scan2, lodcolumn=1, main="FBN1 LOD for Variation across Mouse Genome")
+plot(FBN1.liver.scan2, lodcolumn=1, main="Liver Tissue with Chr15 Covariate")
 add.threshold(FBN1.liver.scan2, perms=FBN1.liver.perms, alpha=0.05, lty="dashed", lwd=1, col="green")
 add.threshold(FBN1.liver.scan2, perms=FBN1.liver.perms, alpha=0.10, lty="dashed", lwd=1, col="orange")
 add.threshold(FBN1.liver.scan2, perms=FBN1.liver.perms, alpha=0.63, lty="dashed", lwd=1, col="red")
@@ -300,6 +291,10 @@ plot.pxg(f2g, find.marker(f2g, chr=8, pos=28), pheno.col=4, main="FBN1 QTL Chr8@
 # Effect plots of the QTL
 x11()
 effectplot(f2g, pheno.col=4, mname1=find.marker(f2g, chr=8, pos=28), main="FBN1 QTL Chr8@28.00 cM")
+
+# Effect plots by sex
+x11()
+effectplot(f2g, pheno.col=4, mname1="Sex", mark1=f2g$pheno$Sex, mname2=find.marker(f2g, chr=8, pos=28), main="FBN1 QTL Chr8@28.00 cM")
 
 # Obtain confidence intervals for QTL LOD peaks
 x11()
@@ -336,3 +331,49 @@ summary(FBN1.liver.modelFit)
 # Two Additive QTL
 # Chr8@27.9 cM 
 # Chr15@43.8 cM
+
+#################################################
+## 10: TANDEM GRAPHS                           ##
+#################################################
+
+graphics.off()
+
+par(mfrow=c(3,2))
+
+plot(FBN1.adipose.scan1, lodcolumn=1, main="Adipose Tissue")
+add.threshold(FBN1.adipose.scan1, perms=FBN1.adipose.perms, alpha=0.05, lty="dashed", lwd=1, col="green")
+add.threshold(FBN1.adipose.scan1, perms=FBN1.adipose.perms, alpha=0.10, lty="dashed", lwd=1, col="orange")
+add.threshold(FBN1.adipose.scan1, perms=FBN1.adipose.perms, alpha=0.63, lty="dashed", lwd=1, col="red")
+
+plot(FBN1.adipose.scan2, lodcolumn=1, main="Adipose Tissue with Chr3 Covariate")
+add.threshold(FBN1.adipose.scan2, perms=FBN1.adipose.perms, alpha=0.05, lty="dashed", lwd=1, col="green")
+add.threshold(FBN1.adipose.scan2, perms=FBN1.adipose.perms, alpha=0.10, lty="dashed", lwd=1, col="orange")
+add.threshold(FBN1.adipose.scan2, perms=FBN1.adipose.perms, alpha=0.63, lty="dashed", lwd=1, col="red")
+
+plot(FBN1.adipose.scan3, lodcolumn=1, main="Adipose Tissue with Chr7 Covariate")
+add.threshold(FBN1.adipose.scan3, perms=FBN1.adipose.perms, alpha=0.05, lty="dashed", lwd=1, col="green")
+add.threshold(FBN1.adipose.scan3, perms=FBN1.adipose.perms, alpha=0.10, lty="dashed", lwd=1, col="orange")
+add.threshold(FBN1.adipose.scan3, perms=FBN1.adipose.perms, alpha=0.63, lty="dashed", lwd=1, col="red")
+
+plot(FBN1.liver.scan1, lodcolumn=1, main="Liver Tissue")
+add.threshold(FBN1.liver.scan1, perms=FBN1.liver.perms, alpha=0.05, lty="dashed", lwd=1, col="green")
+add.threshold(FBN1.liver.scan1, perms=FBN1.liver.perms, alpha=0.10, lty="dashed", lwd=1, col="orange")
+add.threshold(FBN1.liver.scan1, perms=FBN1.liver.perms, alpha=0.63, lty="dashed", lwd=1, col="red")
+
+plot(FBN1.liver.scan2, lodcolumn=1, main="Liver Tissue with Chr15 Covariate")
+add.threshold(FBN1.liver.scan2, perms=FBN1.liver.perms, alpha=0.05, lty="dashed", lwd=1, col="green")
+add.threshold(FBN1.liver.scan2, perms=FBN1.liver.perms, alpha=0.10, lty="dashed", lwd=1, col="orange")
+add.threshold(FBN1.liver.scan2, perms=FBN1.liver.perms, alpha=0.63, lty="dashed", lwd=1, col="red")
+
+par(mfrow=c(1,1))
+
+par(mfrow=c(2,1))
+plot(FBN1.adipose.scan1, lodcolumn=1, main="Adipose Tissue")
+add.threshold(FBN1.adipose.scan1, perms=FBN1.adipose.perms, alpha=0.05, lty="dashed", lwd=1, col="green")
+add.threshold(FBN1.adipose.scan1, perms=FBN1.adipose.perms, alpha=0.10, lty="dashed", lwd=1, col="orange")
+add.threshold(FBN1.adipose.scan1, perms=FBN1.adipose.perms, alpha=0.63, lty="dashed", lwd=1, col="red")
+plot(FBN1.liver.scan1, lodcolumn=1, main="Liver Tissue")
+add.threshold(FBN1.liver.scan1, perms=FBN1.liver.perms, alpha=0.05, lty="dashed", lwd=1, col="green")
+add.threshold(FBN1.liver.scan1, perms=FBN1.liver.perms, alpha=0.10, lty="dashed", lwd=1, col="orange")
+add.threshold(FBN1.liver.scan1, perms=FBN1.liver.perms, alpha=0.63, lty="dashed", lwd=1, col="red")
+par(mfrow=c(1,1))

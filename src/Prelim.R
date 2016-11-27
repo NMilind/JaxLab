@@ -40,18 +40,18 @@ geneExps["NR1H3"] <- "505407";
 geneExps["NCOR2"] <- "503860";
 geneExps["SREBF1"] <- "10002908270";
 geneExps["TGFB1"] <- "507240";
-#phenos["Fat.wt"] <- "Fat.wt";
-#phenos["LDL"] <- "LDL";
-#phenos["HDL"] <- "HDL";
-#phenos["CHOL"] <- "CHOL";
-#phenos["adipose.turnover"] <- "adipose.turnover";
-#phenos["liver.TG"] <- "liver.TG";
-#phenos["Liver.wt"] <- "Liver.wt";
-#phenos["INS.8wk"] <- "INS.8wk";
-#phenos["TNF.alpha"] <- "TNF.alpha"; 
-#phenos["GLU.4wk"] <- "GLU.4wk";
-#phenos["GLU.6wk"] <- "GLU.6wk";
-#phenos["GLU.8wk"] <- "GLU.8wk";
+phenos["Fat.wt"] <- "Fat.wt";
+phenos["LDL"] <- "LDL";
+phenos["HDL"] <- "HDL";
+phenos["CHOL"] <- "CHOL";
+phenos["adipose.turnover"] <- "adipose.turnover";
+phenos["liver.TG"] <- "liver.TG";
+phenos["Liver.wt"] <- "Liver.wt";
+phenos["INS.8wk"] <- "INS.8wk";
+phenos["TNF.alpha"] <- "TNF.alpha"; 
+phenos["GLU.4wk"] <- "GLU.4wk";
+phenos["GLU.6wk"] <- "GLU.6wk";
+phenos["GLU.8wk"] <- "GLU.8wk";
 f2g$adipose <- cbind(f2g$pheno[,c("MouseNum","Sex","pgm")], cbind(liver.rz[,geneExps], phenotypes.rz[,phenos]))
 f2g$liver <- cbind(f2g$pheno[,c("MouseNum", "Sex", "pgm")], cbind(liver.rz[,geneExps], phenotypes.rz[,phenos]))
 f2g$pheno <- cbind(f2g$pheno[,c("MouseNum", "Sex", "pgm")], cbind(adipose.rz[,geneExps], phenotypes.rz[,phenos]))
@@ -69,6 +69,67 @@ x11()
 pairs(cbind(adipose.rz[,geneExps], (phenotypes[,phenos])), main="Adipose", labels=c(names(geneExps), names(phenos)), upper.panel=panel.cor, diag.panel=panel.hist)
 x11()
 pairs(cbind(liver.rz[,geneExps], (phenotypes[,phenos])), main="Liver", labels=c(names(geneExps), names(phenos)), upper.panel=panel.cor, diag.panel=panel.hist)
+
+# Pair-Wise plots using proper log transforms
+FBN1.adipose <- adipose.rz[,annot$a_gene_id[which(annot$gene_symbol=="Fbn1")]]
+Pheno.Fat.wt <- phenotypes[,"Fat.wt"]
+Pheno.LDL <- log(phenotypes[,"LDL"])
+Pheno.CHOL <- log(phenotypes[,"CHOL"])
+Pheno.INS.8wk <- log(phenotypes[,"INS.8wk"])
+Pheno.GLU.4wk <- log(phenotypes[,"GLU.4wk"])
+Pheno.Weight <- phenotypes[,"Weight"]
+Pheno.Gastroc.wt <- phenotypes[,"Gastroc.wt"]
+pairs(
+  cbind(FBN1.adipose, Pheno.Fat.wt, Pheno.LDL, Pheno.INS.8wk, Pheno.GLU.4wk, Pheno.Weight, Pheno.Gastroc.wt), 
+  main="FBN1", 
+  labels=c("FBN1", "Fat.wt", "LDL", "INS.8wk", "GLU.4wk", "Weight", "Gastroc.wt"), 
+  upper.panel=panel.cor, 
+  diag.panel=panel.hist
+)
+
+FBN1.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Sirt1")]]
+Pheno.Liver.wt <- log(phenotypes[,"Liver.wt"])
+Pheno.HDL <- log(phenotypes[,"HDL"])
+Pheno.Leptin <- log(phenotypes[,"Leptin"])
+Pheno.liver.TG <- log(phenotypes[,"liver.TG"])
+pairs(
+  cbind(FBN1.adipose, FBN1.liver, Pheno.Liver.wt, Pheno.HDL, Pheno.Leptin, Pheno.liver.TG), 
+  main="FBN1", 
+  labels=c("FBN1.adipose", "FBN1.liver", "Liver.wt", "HDL", "Leptin", "liver.TG"), 
+  upper.panel=panel.cor, 
+  diag.panel=panel.hist
+)
+
+FBN1.gastroc <- gastroc.rz[,annot$a_gene_id[which(annot$gene_symbol=="Fbn1")]]
+Pheno.Gastroc.wt <- phenotypes[,"Gastroc.wt"]
+Pheno.Fat.wt <- phenotypes[,"Fat.wt"]
+Pheno.LDL <- log(phenotypes[,"LDL"])
+Pheno.CHOL <- log(phenotypes[,"CHOL"])
+Pheno.INS.8wk <- log(phenotypes[,"INS.8wk"])
+Pheno.GLU.4wk <- log(phenotypes[,"GLU.4wk"])
+Pheno.Weight <- phenotypes[,"Weight"]
+pairs(
+  cbind(FBN1.gastroc, Pheno.Gastroc.wt, Pheno.Fat.wt, Pheno.LDL, Pheno.CHOL, Pheno.INS.8wk, Pheno.GLU.4wk, Pheno.Weight),
+  main="FBN1",
+  labels=c("FBN1.gastroc", "Gastroc.wt", "Fat.wt", "LDL", "CHOL", "INS.8wk", "GLU.4wk", "Weight"),
+  upper.panel=panel.cor,
+  diag.panel=panel.hist
+)
+
+FBN1.adipose <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Fbn1")]]
+SIRT1.adipose <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Sirt")]]
+PIK3CG.adipose <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Pik3cg")]]
+NR1H3.adipose <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Nr1h3")]]
+NCOR2.adipose <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Ncor2")]]
+SREBF1.adipose <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Srebf1")]]
+TGFB.adipose <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Tgfb1")]]
+pairs(
+  cbind(FBN1.adipose, SIRT1.adipose, PIK3CG.adipose, NR1H3.adipose, NCOR2.adipose, SREBF1.adipose, TGFB.adipose),
+  main="FBN1",
+  labels=c("Fbn1", "Sirt1", "Pik3cg", "Nr1h3", "Ncor2", "Srebf1", "Tgfb1"),
+  upper.panel=panel.cor,
+  diag.panel=panel.hist
+)
 
 # Genome Scans
 
