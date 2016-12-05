@@ -199,7 +199,7 @@ summary(FBN1.adipose.modelFit)
 ## 6: ENVIRONMENTAL SETUP                      ##
 #################################################
 
-#source("src/configuration.R")
+source("src/configuration.R")
 
 #################################################
 ## 7: CROSS SETUP (HEPATIC)                    ##
@@ -302,6 +302,8 @@ CI.Chr8 <- bayesint(FBN1.liver.scan2, chr=8, prob=0.95)
 plot(FBN1.liver.scan2, chr=8, lodcolumn=1, main="Confidence Interval for Chr8")
 lines(x=CI.Chr8[c(1,3),2], y=c(0,0), type="l", col="#00FF00", lwd=4)
 print(CI.Chr8[c(1,3),2])
+# OUTPUT
+# 20.92 cm to 48.92 cM
 
 # Run a two-qtl scan over f2g
 #gc()

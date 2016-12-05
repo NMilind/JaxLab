@@ -6,6 +6,7 @@
 #
 #set working directory
 rm(list=ls())
+gc()
 directory <- "~/Desktop/JaxLab"
 setwd(directory)
 # load libraries
@@ -30,6 +31,12 @@ NR1H3.adipose <- adipose.rz[,annot$a_gene_id[which(annot$gene_symbol=="Nr1h3")]]
 NCOR2.adipose <- adipose.rz[,annot$a_gene_id[which(annot$gene_symbol=="Ncor2")]]
 SREBF1.adipose <- adipose.rz[,annot$a_gene_id[which(annot$gene_symbol=="Srebf1")]]
 TGFB1.adipose <- adipose.rz[,annot$a_gene_id[which(annot$gene_symbol=="Tgfb1")]]
+GPSM2.adipose <- adipose.rz[,annot$a_gene_id[which(annot$gene_symbol=="Gpsm2")]]
+CNN3.adipose <- adipose.rz[,annot$a_gene_id[which(annot$gene_symbol=="Cnn3")]]
+PLA2G12A.adipose <- adipose.rz[,annot$a_gene_id[which(annot$gene_symbol=="Pla2g12a")]]
+S1PR1.adipose <- adipose.rz[,annot$a_gene_id[which(annot$gene_symbol=="Fndc7")]]
+AGL.adipose <- adipose.rz[,annot$a_gene_id[which(annot$gene_symbol=="Agl")]]
+CYP2U1.adipose <- adipose.rz[,annot$a_gene_id[which(annot$gene_symbol=="Cyp2u1")]]
 
 FBN1.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Fbn1")]]
 SIRT1.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Sirt1")]]
@@ -39,14 +46,21 @@ NR1H3.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Nr1h3")]]
 NCOR2.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Ncor2")]]
 SREBF1.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Srebf1")]]
 TGFB1.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Tgfb1")]]
+GPSM2.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Gpsm2")]]
+CNN3.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Cnn3")]]
+PLA2G12A.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Pla2g12a")]]
+S1PR1.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Fndc7")]]
+AGL.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Agl")]]
+CYP2U1.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Cyp2u1")]]
 
 f2g$pheno <- cbind(f2g$pheno[,c("MouseNum","Sex","pgm")],phenotypes.rz[c("CHOL", "GLU.8wk", "TRIG.8wk", "TG.homogenate", "Liver.wt", "Leptin")],FBN1.adipose, SIRT1.adipose, BMAL1.adipose, PIK3CG.adipose, NR1H3.adipose, NCOR2.adipose, SREBF1.adipose)
 f2g$pheno <- cbind(f2g$pheno[,c("MouseNum","Sex","pgm")],phenotypes.rz[c("CHOL", "GLU.8wk", "TRIG.8wk", "TG.homogenate", "Liver.wt", "Leptin")],FBN1.adipose, BMAL1.adipose)
 f2g$pheno <- cbind(f2g$pheno[,c("MouseNum","Sex","pgm")],FBN1.adipose, SIRT1.adipose, BMAL1.adipose, PIK3CG.adipose, NR1H3.adipose, NCOR2.adipose, SREBF1.adipose, TGFB1.adipose)
 f2g$pheno <- cbind(f2g$pheno[,c("MouseNum","Sex","pgm")],FBN1.liver, SIRT1.liver, BMAL1.liver, PIK3CG.liver, NR1H3.liver, NCOR2.liver, SREBF1.liver, TGFB1.liver)
+f2g$pheno <- cbind(f2g$pheno[,c("MouseNum","Sex","pgm")], FBN1.adipose, SIRT1.adipose, BMAL1.adipose, PIK3CG.adipose, NR1H3.adipose, NCOR2.adipose, SREBF1.adipose, TGFB1.adipose, GPSM2.adipose, CNN3.adipose, PLA2G12A.adipose, S1PR1.adipose, AGL.adipose, CYP2U1.adipose)
 names(f2g$pheno)
 
-setwd("net6-data")
+setwd("net7-data")
 
 # Step 0:  Load qtlnet
 library(qtlnet)
@@ -62,6 +76,7 @@ library(qtlnet)
 ###############################################################################
 #STEP 1: Set up for network with nodes pheno.col and maximum parent max.parents
 ###############################################################################
+gc()
 # Phenotype identifer from cross object.
 pheno.col <- 4:ncol(f2g$pheno)
 #
@@ -166,7 +181,7 @@ save(file="out1.RData", out1)
 # Opening data from previous runs
 ###################################
 setwd("..")
-setwd("net5-data")
+setwd("net7-data")
 load(file="out1.RData")
 summary(out1)
 plot(out1)
