@@ -4,13 +4,13 @@
 #################################################
 
 #################################################
-## 1: ENVIRONMENTAL SETUP                      ##
+## ENVIRONMENTAL SETUP                         ##
 #################################################
 
 source("src/configuration.R")
 
 #################################################
-## 2: CROSS SETUP (ADIPOSE)                    ##
+## CROSS SETUP (ADIPOSE)                       ##
 #################################################
 
 # Print a summary of the BTBR cross
@@ -28,7 +28,7 @@ f2g$pheno <- cbind(f2g$pheno[,names(f2g$pheno)], FBN1.adipose)
 names(f2g$pheno)
 
 #################################################
-## 3: SCANS                                    ##
+## SCANS                                       ##
 #################################################
 
 f2g <- calc.genoprob(f2g, step=1, stepwidth="fixed", map.function="c-f", err=0.002)
@@ -70,7 +70,7 @@ summary(FBN1.adipose.scan1, perms=FBN1.adipose.perms, alpha=0.63, format="tabByC
 # cX.loc5      X  8.60   3.60    28.3 2.17
 
 #################################################
-## 4: PLOTS                                    ##
+## PLOTS                                       ##
 #################################################
 
 graphics.off()
@@ -123,7 +123,7 @@ print(CI.ChrX[c(1,3),2])
 par(mfrow=c(1,1))
 
 #################################################
-## 5: MULTIPLE QTL ANALYSIS                    ##
+## MULTIPLE QTL ANALYSIS                       ##
 #################################################
 
 graphics.off()
@@ -196,13 +196,13 @@ summary(FBN1.adipose.modelFit)
 # Chr7@6.14 cM
 
 #################################################
-## 6: ENVIRONMENTAL SETUP                      ##
+## ENVIRONMENTAL SETUP                         ##
 #################################################
 
 #source("src/configuration.R")
 
 #################################################
-## 7: CROSS SETUP (HEPATIC)                    ##
+## CROSS SETUP (HEPATIC)                       ##
 #################################################
 
 # Print a summary of the BTBR cross
@@ -220,7 +220,7 @@ f2g$pheno <- cbind(f2g$pheno[,names(f2g$pheno)], FBN1.liver)
 names(f2g$pheno)
 
 #################################################
-## 8: SCANS                                    ##
+## SCANS                                       ##
 #################################################
 
 f2g <- calc.genoprob(f2g, step=1, stepwidth="fixed", map.function="c-f", err=0.002)
@@ -256,7 +256,7 @@ summary(FBN1.liver.scan1, perms=FBN1.liver.perms, alpha=0.63, format="tabByCol",
 # rs13482700  15 43.63  31.94    55.7 3.24
 
 #################################################
-## 9: MULTIPLE QTL ANALYSIS                    ##
+## MULTIPLE QTL ANALYSIS                       ##
 #################################################
 
 # Scan with Chr15 QTL as a covar to increase power on Chr8
@@ -335,13 +335,13 @@ summary(FBN1.liver.modelFit)
 # Chr15@43.8 cM
 
 #################################################
-## 10: ENVIRONMENTAL SETUP                     ##
+## ENVIRONMENTAL SETUP                         ##
 #################################################
 
 #source("src/configuration.R")
 
 #################################################
-## 11: CROSS SETUP (MUSCLE)                    ##
+## CROSS SETUP (MUSCLE)                        ##
 #################################################
 
 # Print a summary of the BTBR cross
@@ -359,7 +359,7 @@ f2g$pheno <- cbind(f2g$pheno[,names(f2g$pheno)], FBN1.gastroc)
 names(f2g$pheno)
 
 #################################################
-## 12: SCANS                                   ##
+## SCANS                                       ##
 #################################################
 
 f2g <- calc.genoprob(f2g, step=1, stepwidth="fixed", map.function="c-f", err=0.002)
@@ -402,7 +402,7 @@ summary(FBN1.gastroc.scan1, perms=FBN1.gastroc.perms, alpha=0.63, format="tabByC
 # rs6358703   17 14.61   8.15    19.0 5.00
 
 #################################################
-## 13: PLOTS                                   ##
+## PLOTS                                       ##
 #################################################
 
 graphics.off()
@@ -441,7 +441,7 @@ print(CI.Chr17[c(1,3),2])
 par(mfrow=c(1,1))
 
 #################################################
-## 14: MULTIPLE QTL ANALYSIS                   ##
+## MULTIPLE QTL ANALYSIS                       ##
 #################################################
 
 graphics.off()
@@ -503,7 +503,7 @@ effectplot(f2g, pheno.col=4, mname2=find.marker(f2g, chr=9, pos=40.10), mname1=f
 # Chr7@6.14 cM
 
 #################################################
-## 15: TANDEM GRAPHS                           ##
+## TANDEM GRAPHS                               ##
 #################################################
 
 graphics.off()

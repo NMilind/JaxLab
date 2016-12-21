@@ -1,193 +1,150 @@
-#############################################
-#Jackson Laboratory Summer Student Program
-# Example qtlnet code
-#Attie BTBR eQTL data
-##############################################
-#
-#set working directory
-rm(list=ls())
-gc()
-directory <- "~/Desktop/JaxLab"
-setwd(directory)
-# load libraries
-library(qtl)
-library(ggplot2)
-# load myfunctions.R script
-setwd("src")
-source("important_func.R")
-setwd("..")
-# load clean BTBR RData file
-setwd("data")
-load("BTBR.clean.data.Rdata")
-setwd("..")
-ls()
-#
-#define variables
-FBN1.adipose <- adipose.rz[,annot$a_gene_id[which(annot$gene_symbol=="Fbn1")]]
-CYP4V3.adipose <- adipose.rz[,annot$a_gene_id[which(annot$gene_symbol=="Cyp4v3")]]
-CYP2U1.adipose <- adipose.rz[,annot$a_gene_id[which(annot$gene_symbol=="Cyp2u1")]]
-GNG8.adipose <- adipose.rz[,annot$a_gene_id[which(annot$gene_symbol=="Gng8")]]
-NCOR2.adipose <- adipose.rz[,annot$a_gene_id[which(annot$gene_symbol=="Ncor2")]]
-SREBF1.adipose <- adipose.rz[,annot$a_gene_id[which(annot$gene_symbol=="Srebf1")]]
-x11()
-par(mfrow=c(3,2))
-hist(FBN1.adipose)
-hist(CYP4V3.adipose)
-hist(CYP2U1.adipose)
-hist(GNG8.adipose)
-hist(NCOR2.adipose)
-hist(SREBF1.adipose)
-par(mfrow=c(1,1))
+#################################################
+## Author: Hannah Gahagan and Nikhil Milind    ##
+## Date: November 20 2016                      ##
+#################################################
 
-FBN1.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Fbn1")]]
-CYP4V3.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Cyp4v3")]]
-CYP2U1.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Cyp2u1")]]
-GNG8.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Gng8")]]
-NCOR2.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Ncor2")]]
-SREBF1.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Srebf1")]]
-x11()
-par(mfrow=c(3,2))
-hist(FBN1.liver)
-hist(CYP4V3.liver)
-hist(CYP2U1.liver)
-hist(GNG8.liver)
-hist(NCOR2.liver)
-hist(SREBF1.liver)
-par(mfrow=c(1,1))
-
-f2g$pheno <- cbind(f2g$pheno[,c("MouseNum","Sex","pgm")],phenotypes.rz[c("CHOL", "GLU.8wk", "TRIG.8wk", "TG.homogenate", "Liver.wt", "Leptin")],FBN1.adipose, SIRT1.adipose, BMAL1.adipose, PIK3CG.adipose, NR1H3.adipose, NCOR2.adipose, SREBF1.adipose)
-f2g$pheno <- cbind(f2g$pheno[,c("MouseNum","Sex","pgm")],phenotypes.rz[c("CHOL", "GLU.8wk", "TRIG.8wk", "TG.homogenate", "Liver.wt", "Leptin")],FBN1.adipose, BMAL1.adipose)
-f2g$pheno <- cbind(f2g$pheno[,c("MouseNum","Sex","pgm")],FBN1.adipose, SIRT1.adipose, BMAL1.adipose, PIK3CG.adipose, NR1H3.adipose, NCOR2.adipose, SREBF1.adipose, TGFB1.adipose)
-f2g$pheno <- cbind(f2g$pheno[,c("MouseNum","Sex","pgm")],FBN1.liver, SIRT1.liver, BMAL1.liver, PIK3CG.liver, NR1H3.liver, NCOR2.liver, SREBF1.liver, TGFB1.liver)
-f2g$pheno <- cbind(f2g$pheno[,c("MouseNum","Sex","pgm")], FBN1.adipose, SIRT1.adipose, BMAL1.adipose, PIK3CG.adipose, NR1H3.adipose, NCOR2.adipose, SREBF1.adipose, TGFB1.adipose, GPSM2.adipose, CNN3.adipose, PLA2G12A.adipose, S1PR1.adipose, AGL.adipose, CYP2U1.adipose)
-f2g$pheno <- cbind(f2g$pheno[,c("MouseNum","Sex","pgm")], FBN1.adipose, CYP4V3.liver, CYP2U1.liver)
-f2g$pheno <- cbind(f2g$pheno[,c("MouseNum","Sex","pgm")], FBN1.liver, CYP4V3.liver, CYP2U1.liver)
-
-names(f2g$pheno)
-
-setwd("net8-data")
-
-# Step 0:  Load qtlnet
-library(qtlnet)
-#qtlnet of Ppy, Pyy, Npy (Extended Fig. 1)
-
-#define variables
-#f2g$pheno <- cbind(f2g$pheno[,c("MouseNum","Sex","pgm")],Ppy,Pyy,Npy)
-
-################################################################
-# Go through the 5 Phases of QTLnet (Script provided by Ying Qi)
-################################################################
-
-###############################################################################
-#STEP 1: Set up for network with nodes pheno.col and maximum parent max.parents
-###############################################################################
-gc()
-# Phenotype identifer from cross object.
-pheno.col <- 4:ncol(f2g$pheno)
-#
-# maximum number of parents is 3...
-max.parents <- ncol(f2g$pheno)-4
-#
-size.qtlnet(pheno.col, max.parents)
-# computes the number of possible scanones with nodes pheno.col and max parent 
-# 4* (3C1 + 3C2 + 3C3) + 4*(1)
-#
-parents <- parents.qtlnet(pheno.col, max.parents) 
-# Creates a list of all parent sets to be used as covariates of child phenotypes in scanone calculations
-#
-groups <- group.qtlnet(parents = parents, group.size = 8)
-# groups parents into approx equal sized groups for parallel computations
-#
-save(f2g, pheno.col, max.parents, parents, groups, file = "Step1.RData", compress = TRUE)
-pa <- summary(parents)
-# Save files for later computational use
-#
-########################################################################
-# STEP 2: run scanone on each phenotype conditioned on parent phenotypes
-########################################################################
-# precompute BIC scores using scanone on a "grid of computers"; parallel computing
-N <- rep(NA,nrow(groups))
-# Creates an empty matrix 
-#
-for (i in 1:nrow(groups))
-  N[i] <- sum(pa[seq(groups[i,1], groups[i,2]),2])
-# Calculates total number of networks to per group,
-# Assign this sum to N
-#
-# for each row in groups, calculate BIC score
-for(i in seq(nrow(groups))){
-  ##TODO: intcov. Type ?bic.qtlnet for more info
-  bic <- bic.qtlnet(f2g,
-                    pheno.col,
-                    threshold = 3.04,
-                    max.parents = max.parents,
-                    parents = parents[seq(groups[i,1], groups[i,2])],
-                    verbose = FALSE)
-  bic
-  # gets the list containing all possible parents
-  #
-  #########################
-  # STEP 3: Save BIC scores
-  #########################
-  save(bic, file = paste("bic", i, ".RData", sep = ""), compress = TRUE)
+runQTLNet <- function(genes.adipose=c(), genes.liver=c(), phenos=c()) {
+  
+  #################################################
+  ## ENVIRONMENTAL SETUP                         ##
+  #################################################
+  
+  # Clear memory for QTLNet usage
+  gc()
+  
+  setwd("~/Desktop/JaxLab")
+  # Import data and important functions
+  source("src/configuration.R")
+  
+  #################################################
+  ## SETUP GENES AND PHENOTYPES                  ##
+  #################################################
+  
+  f2g$pheno <- f2g$pheno[,c("MouseNum","Sex","pgm")]
+  for (i in 1:length(genes.adipose)) {
+    f2g$pheno <- cbind(f2g$pheno, adipose.rz[,annot$a_gene_id[which(annot$gene_symbol==genes.adipose[i])]])
+  }
+  for (i in 1:length(genes.liver)) {
+    f2g$pheno <- cbind(f2g$pheno, liver.rz[,annot$a_gene_id[which(annot$gene_symbol==genes.liver[i])]])
+  }
+  f2g$pheno <- cbind(f2g$pheno, phenotypes.rz[,phenos])
+  names(f2g$pheno) <- c(c("MouseNum", "Sex", "pgm"), genes.adipose, genes.liver, phenos)
+  names(f2g$pheno)
+  
+  #################################################
+  ## SETUP WORKING DiRECTORY                     ##
+  #################################################
+  
+  setwd("data/net-data")
+  do.call(file.remove, list(list.files("~/Desktop/JaxLab/data/net-data/", full.names=TRUE)))
+  
+  library(qtlnet)
+  
+  #################################################
+  ## SETUP FOR NETWORK                           ##
+  #################################################
+  
+  # Clear memory again
+  gc()
+  # Range of phenotypes that are to be used
+  pheno.col <- 4:ncol(f2g$pheno)
+  # Maximum number of parents
+  max.parents <- ncol(f2g$pheno) - 4
+  # Number of possible scanone operations that will be performed
+  size.qtlnet(pheno.col, max.parents)
+  # Creates a list of parent sets that will be covariates
+  parents <- parents.qtlnet(pheno.col, max.parents)
+  # Groups the parents into approximately equal sizes for parallel computation
+  groups <- group.qtlnet(parents=parents, group.size=8)
+  # Save the data
+  save(f2g, pheno.col, max.parents, parents, groups, file="Step1.RData", compress=TRUE)
+  pa <- summary(parents)
+  
+  #################################################
+  ## RUN SCANONE ON EACH PHENOTYPE               ##
+  #################################################
+  
+  # Precompute BIC Scores using scanone and parallel computing
+  # Create empty array
+  N <- rep(NA, nrow(groups))
+  for (i in 1:nrow(groups))
+    N[i] <- sum(pa[seq(groups[i,1], groups[i,2]),2])
+  
+  # Calculate the BIC score for each row in groups
+  for (i in seq(nrow(groups))) {
+    bic <- bic.qtlnet(f2g, 
+                      pheno.col, 
+                      threshold=3.04, 
+                      max.parents=max.parents, 
+                      parents=parents[seq(groups[i,1], groups[i,2])], 
+                      verbose=FALSE)
+    cat("BIC Groups Row", i, "\n")
+    save(bic, file=paste("bic", i, ".RData", sep=""), compress=TRUE)
+  }
+  
+  #################################################
+  ## PARALLELIZED MARKOV CHAIN MODEL             ##
+  #################################################
+  
+  load(file="Step1.RData")
+  
+  # Read and save the BIC scores into one object
+  bic.group <- list()
+  for (i in seq(nrow(groups))) {
+    load(file=paste("bic", i, ".RData", sep=""))
+    bic.group[[i]] <- bic
+    cat("Compiled Group", i, "\n")
+  }
+  
+  saved.scores <- bic.join(f2g, pheno.col = 4:ncol(f2g$pheno), bic.group, max.parents = ncol(f2g$pheno)-4)
+  print(saved.scores)
+  
+  # Generate the Markov Chain Model
+  set.seed(54321)
+  # Number of parallel runs
+  n.runs <- 5
+  
+  for (i in seq(n.runs)) {
+    cat("Markov Chain Run", i, "\n")
+    mcmc <- mcmc.qtlnet(f2g, 
+                        pheno.col=4:ncol(f2g$pheno), 
+                        threshold=3.04, 
+                        thinning=1, 
+                        max.parents=max.parents, 
+                        saved.scores=saved.scores, 
+                        init.edges=NULL)
+    save(mcmc, file=paste("mcmc", i, ".RData", sep=""), compress=TRUE)
+  }
+  
+  #################################################
+  ## POST-PROCESSING                             ##
+  #################################################
+  
+  outs.qtlnet <-list()
+  for (i in seq(n.runs)){
+    load(paste("mcmc", i, ".RData", sep=""))
+    outs.qtlnet[[i]] <- mcmc
+  }
+  
+  # Concatenate Outputs from Various Runs
+  output <- c.qtlnet(outs.qtlnet) 
+  
+  # Summary Table of Causal Directionality
+  print(summary(output))
+  # Plot the Causal Network
+  plot(output)
+  
+  # Save for Future Use
+  save(file="output.RData", output)
 }
-###########################
-# STEP 4: MCMC, parallelize
-###########################
-load("Step1.RData")
-# Read in saved BIC score and combine into one object
-bic.group <- list()
-bic.group
-for(i in seq(nrow(groups))){
-  load(paste("bic", i, ".RData", sep = ""))
-  bic.group[[i]] <- bic
-  cat("group =", i, "\n")
-}
-#
-saved.scores <- bic.join(f2g, pheno.col = 4:ncol(f2g$pheno), bic.group, max.parents = ncol(f2g$pheno)-4)
-saved.scores
-# sample Markov chain (MCMC)
-set.seed(54321)
-#
-n.runs <- 5
-# sets number of parallel runs
-#
-# parallelize this
-for (i in seq(n.runs))
-{ 
-  cat("run = ", i, "\n")
-  ## Run MCMC with randomized initial network
-  mcmc <- mcmc.qtlnet(f2g,
-                      pheno.col=4:ncol(f2g$pheno),
-                      threshold = 3.04,
-                      thinning = 1,  #thinning rate
-                      max.parents = max.parents,
-                      saved.scores = saved.scores, #precomputed bic score
-                      init.edges = NULL ) #edges chosen uniformly from 0 to number of possible edges  
-  save(mcmc, file = paste("mcmc", i, ".RData", sep = ""), compress = TRUE)
-}
-#############################################
-# STEP 5: Combine results for Post-processing
-#############################################
-outs.qtlnet <-list()
-for (i in seq(n.runs)){
-  load(paste("mcmc", i, ".RData", sep = ""))
-  outs.qtlnet[[i]] <- mcmc
-}
-#
-out1 <-c.qtlnet(outs.qtlnet) # catenates the outputs from 3 separate runs together
-#
-summary(out1)
-plot(out1)
 
-save(file="out1.RData", out1)
+#################################################
+## LOAD OUTPUT AND VIEW                        ##
+#################################################
 
-###################################
-# Opening data from previous runs
-###################################
-setwd("..")
-setwd("net9-data")
-load(file="out1.RData")
-summary(out1)
-plot(out1)
-
+loadQTLOutput <- function(loadfile="~/Desktop/JaxLab/data/net-data/output.RData") {
+  
+  load(file=loadfile)
+  print(summary(output))
+  plot(output)
+}
