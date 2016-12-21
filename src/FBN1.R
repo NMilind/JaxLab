@@ -199,7 +199,7 @@ summary(FBN1.adipose.modelFit)
 ## 6: ENVIRONMENTAL SETUP                      ##
 #################################################
 
-source("src/configuration.R")
+#source("src/configuration.R")
 
 #################################################
 ## 7: CROSS SETUP (HEPATIC)                    ##
@@ -335,12 +335,185 @@ summary(FBN1.liver.modelFit)
 # Chr15@43.8 cM
 
 #################################################
-## 10: TANDEM GRAPHS                           ##
+## 10: ENVIRONMENTAL SETUP                     ##
+#################################################
+
+#source("src/configuration.R")
+
+#################################################
+## 11: CROSS SETUP (MUSCLE)                    ##
+#################################################
+
+# Print a summary of the BTBR cross
+summary(f2g)
+# Print the names of the current phenotypes
+names(f2g$pheno)
+# Use only MouseNum, Sex, and pgm for analytics
+f2g$pheno <- f2g$pheno[,c("MouseNum", "Sex", "pgm")]
+# Check to make sure only three columns are conserved
+names(f2g$pheno)
+# Add FBN1 as a phenotype
+FBN1.gastroc <- gastroc.rz[,annot$a_gene_id[which(annot$gene_symbol=="Fbn1")]]
+f2g$pheno <- cbind(f2g$pheno[,names(f2g$pheno)], FBN1.gastroc)
+#  Check to make sure FBN1 is added
+names(f2g$pheno)
+
+#################################################
+## 12: SCANS                                   ##
+#################################################
+
+f2g <- calc.genoprob(f2g, step=1, stepwidth="fixed", map.function="c-f", err=0.002)
+f2g <- sim.geno(f2g, step=1, stepwidth="fixed", map.function="c-f", err=0.002)
+
+sex <- as.numeric(f2g$pheno$Sex) - 1
+
+# Permute through the cross to create baseline LOD score levels
+#FBN1.gastroc.perms <- scanone(f2g, pheno.col=4, addcovar=sex, method="hk", n.perm=1000, perm.Xsp=TRUE)
+#save(file="data/FBN1-FBN1.gastroc.perms.RData", FBN1.gastroc.perms)
+load(file="data/FBN1-FBN1.gastroc.perms.RData")
+
+# Scan for FBN1 in the cross
+FBN1.gastroc.scan1 <- scanone(f2g, pheno.col=4, addcovar=sex, method="hk")
+
+# Plot the LOD scan with thresholds from the permutations
+x11()
+plot(FBN1.gastroc.scan1, lodcolumn=1, main="FBN1 LOD for Variation across Mouse Genome")
+add.threshold(FBN1.gastroc.scan1, perms=FBN1.gastroc.perms, alpha=0.05, lty="dashed", lwd=1, col="green")
+add.threshold(FBN1.gastroc.scan1, perms=FBN1.gastroc.perms, alpha=0.10, lty="dashed", lwd=1, col="orange")
+add.threshold(FBN1.gastroc.scan1, perms=FBN1.gastroc.perms, alpha=0.63, lty="dashed", lwd=1, col="red")
+# Major Peaks: Chr9, Chr17
+# Interesting Peaks: Chr2, Chr10, Chr16
+
+# Tabulate and print LOD peaks where alpha=0.05
+summary(FBN1.gastroc.scan1, perms=FBN1.gastroc.perms, alpha=0.05, format="tabByCol", ci.function="lodint")
+# OUTPUT
+#            chr  pos ci.low ci.high  lod
+# rs13480263   9 40.1  20.95    52.4 4.39
+# rs6358703   17 14.6   8.15    19.0 5.00
+
+# Tabulate and print LOD peaks where alpha=0.63
+summary(FBN1.gastroc.scan1, perms=FBN1.gastroc.perms, alpha=0.63, format="tabByCol", ci.function="lodint")
+# OUTPUT
+#            chr   pos ci.low ci.high  lod
+# rs13476470   2 25.52   5.00    33.2 3.82
+# rs13480263   9 40.11  20.95    52.4 4.39
+# rs13480685  10 50.56  17.06    68.2 2.68
+# rs4152386   16  2.35   2.35    20.2 2.71
+# rs6358703   17 14.61   8.15    19.0 5.00
+
+#################################################
+## 13: PLOTS                                   ##
+#################################################
+
+graphics.off()
+# Compare phenotypes to genotypes at identified QTL
+x11()
+par(mfrow=c(1,2))
+plot.pxg(f2g, find.marker(f2g, chr=9, pos=40.10), pheno.col=4, main="FBN1 QTL Chr9@40.10 cM")
+plot.pxg(f2g, find.marker(f2g, chr=17, pos=14.60), pheno.col=4, main="FBN1 QTL Chr17@14.60 cM")
+par(mfrow=c(1,1))
+
+# Effect plots of the QTL
+x11()
+par(mfrow=c(1,2))
+effectplot(f2g, pheno.col=4, mname1=find.marker(f2g, chr=9, pos=40.10), main="FBN1 QTL Chr9@40.10 cM")
+effectplot(f2g, pheno.col=4, mname1=find.marker(f2g, chr=17, pos=14.60), main="FBN1 QTL Chr17@14.60 cM")
+par(mfrow=c(1,1))
+
+# Effect plots by sex
+x11()
+effectplot(f2g, pheno.col=4, mname1="Sex", mark1=f2g$pheno$Sex, mname2=find.marker(f2g, chr=9, pos=40.10), main="FBN1 QTL Chr9@40.10 cM")
+effectplot(f2g, pheno.col=4, mname1="Sex", mark1=f2g$pheno$Sex, mname2=find.marker(f2g, chr=17, pos=14.60), main="FBN1 QTL Chr17@14.60 cM")
+
+# Obtain confidence intervals for QTL LOD peaks
+x11()
+par(mfrow=c(1,2))
+CI.Chr9 <- bayesint(FBN1.gastroc.scan1, chr=9, prob=0.95)
+plot(FBN1.gastroc.scan1, chr=9, lodcolumn=1, main="Confidence Interval for Chr9")
+lines(x=CI.Chr9[c(1,3),2], y=c(0,0), type="l", col="#00FF00", lwd=4)
+print(CI.Chr9[c(1,3),2])
+# From 21.45800 cM to 51.56976 cM
+CI.Chr17 <- bayesint(FBN1.gastroc.scan1, chr=17, prob=0.95)
+plot(FBN1.gastroc.scan1, chr=17, lodcolumn=1, main="Confidence Interval for Chr17")
+lines(x=CI.Chr17[c(1,3),2], y=c(0,0), type="l", col="#00FF00", lwd=4)
+print(CI.Chr17[c(1,3),2])
+# From 8.518018 cM to 17.332000 cM
+par(mfrow=c(1,1))
+
+#################################################
+## 14: MULTIPLE QTL ANALYSIS                   ##
 #################################################
 
 graphics.off()
 
-par(mfrow=c(3,2))
+# Scan for FBN1 in the cross with QTL Chr17 as additive covariate
+FBN1.gastroc.scan2 <- scanone(f2g, pheno.col=4, addcovar=f2g$geno$'17'$data[,find.marker(f2g, chr=17, pos=14.60)], method="hk")
+
+# Plot the LOD scan with thresholds from the permutations
+x11()
+plot(FBN1.gastroc.scan2, lodcolumn=1, main="FBN1 LOD for Variation across Mouse Genome")
+add.threshold(FBN1.gastroc.scan2, perms=FBN1.gastroc.perms, alpha=0.05, lty="dashed", lwd=1, col="green")
+add.threshold(FBN1.gastroc.scan2, perms=FBN1.gastroc.perms, alpha=0.10, lty="dashed", lwd=1, col="orange")
+add.threshold(FBN1.gastroc.scan2, perms=FBN1.gastroc.perms, alpha=0.63, lty="dashed", lwd=1, col="red")
+# Major Peaks: Chr9
+
+# Scan for FBN1 in the cross with QTL Chr9 as additive covariate
+FBN1.gastroc.scan3 <- scanone(f2g, pheno.col=4, addcovar=f2g$geno$'9'$data[,find.marker(f2g, chr=9, pos=40.10)], method="hk")
+
+# Plot the LOD scan with thresholds from the permutations
+x11()
+plot(FBN1.gastroc.scan3, lodcolumn=1, main="FBN1 LOD for Variation across Mouse Genome")
+add.threshold(FBN1.gastroc.scan3, perms=FBN1.gastroc.perms, alpha=0.05, lty="dashed", lwd=1, col="green")
+add.threshold(FBN1.gastroc.scan3, perms=FBN1.gastroc.perms, alpha=0.10, lty="dashed", lwd=1, col="orange")
+add.threshold(FBN1.gastroc.scan3, perms=FBN1.gastroc.perms, alpha=0.63, lty="dashed", lwd=1, col="red")
+# Major Peaks: Chr17, Chr2
+
+# QTL Effect Plots
+graphics.off()
+x11()
+effectplot(f2g, pheno.col=4, mname2=find.marker(f2g, chr=9, pos=40.10), mname1=find.marker(f2g, chr=17, pos=14.60), main="Chr9@40.10 cM x Chr17@14.60 cM")
+
+# Run a two-qtl scan over f2g
+#gc()
+#FBN1.gastroc.scan4 <- scantwo(f2g, pheno.col=4, addcovar=sex, method="hk")
+#save(file="data/FBN1-FBN1.gastroc.scan4.RData", FBN1.gastroc.scan4)
+#load(file="data/FBN1-FBN1.gastroc.scan4.RData")
+
+# Summary of results from scan
+#summary(FBN1.adipose.scan4, c(9.1, 7.1, 6.3, 6.3, 3.3), "best")
+#       pos1f pos2f lod.full lod.fv1 lod.int     pos1a pos2a lod.add lod.av1
+# c3:c7  62.5  8.14     9.66    5.35    1.32      49.5  6.14    8.34    4.03
+
+#graphics.off()
+
+# Plot the results of the two-qtl scan
+#x11()
+#plot(FBN1.adipose.scan4)
+
+# Make a QTL Model
+#FBN1.adipose.model <- makeqtl(f2g, c("3","7"), c(49.5, 6.14))
+#FBN1.adipose.modelFit <- fitqtl(f2g, pheno.col=4, qtl=FBN1.adipose.model, formula=y~Q1+Q2)
+#summary(FBN1.adipose.modelFit)
+# ANOVA OUTPUT
+# Variation accounted for: 7.384149%
+# Model: y~Chr3+Chr7
+
+# Two Additive QTL
+# Chr3@49.5 cM 
+# Chr7@6.14 cM
+
+#################################################
+## 15: TANDEM GRAPHS                           ##
+#################################################
+
+graphics.off()
+
+par(mfrow=c(3,1))
+
+plot(FBN1.gastroc.scan1, lodcolumn=1, main="Muscle Tissue")
+add.threshold(FBN1.gastroc.scan1, perms=FBN1.gastroc.perms, alpha=0.05, lty="dashed", lwd=1, col="green")
+add.threshold(FBN1.gastroc.scan1, perms=FBN1.gastroc.perms, alpha=0.10, lty="dashed", lwd=1, col="orange")
+add.threshold(FBN1.gastroc.scan1, perms=FBN1.gastroc.perms, alpha=0.63, lty="dashed", lwd=1, col="red")
 
 plot(FBN1.adipose.scan1, lodcolumn=1, main="Adipose Tissue")
 add.threshold(FBN1.adipose.scan1, perms=FBN1.adipose.perms, alpha=0.05, lty="dashed", lwd=1, col="green")

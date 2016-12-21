@@ -24,43 +24,48 @@ ls()
 #
 #define variables
 FBN1.adipose <- adipose.rz[,annot$a_gene_id[which(annot$gene_symbol=="Fbn1")]]
-SIRT1.adipose <- adipose.rz[,annot$a_gene_id[which(annot$gene_symbol=="Sirt1")]]
-BMAL1.adipose <- adipose.rz[,annot$a_gene_id[which(annot$gene_symbol=="Arntl")]]
-PIK3CG.adipose <- adipose.rz[,annot$a_gene_id[which(annot$gene_symbol=="Pik3cg")]]
-NR1H3.adipose <- adipose.rz[,annot$a_gene_id[which(annot$gene_symbol=="Nr1h3")]]
+CYP4V3.adipose <- adipose.rz[,annot$a_gene_id[which(annot$gene_symbol=="Cyp4v3")]]
+CYP2U1.adipose <- adipose.rz[,annot$a_gene_id[which(annot$gene_symbol=="Cyp2u1")]]
+GNG8.adipose <- adipose.rz[,annot$a_gene_id[which(annot$gene_symbol=="Gng8")]]
 NCOR2.adipose <- adipose.rz[,annot$a_gene_id[which(annot$gene_symbol=="Ncor2")]]
 SREBF1.adipose <- adipose.rz[,annot$a_gene_id[which(annot$gene_symbol=="Srebf1")]]
-TGFB1.adipose <- adipose.rz[,annot$a_gene_id[which(annot$gene_symbol=="Tgfb1")]]
-GPSM2.adipose <- adipose.rz[,annot$a_gene_id[which(annot$gene_symbol=="Gpsm2")]]
-CNN3.adipose <- adipose.rz[,annot$a_gene_id[which(annot$gene_symbol=="Cnn3")]]
-PLA2G12A.adipose <- adipose.rz[,annot$a_gene_id[which(annot$gene_symbol=="Pla2g12a")]]
-S1PR1.adipose <- adipose.rz[,annot$a_gene_id[which(annot$gene_symbol=="Fndc7")]]
-AGL.adipose <- adipose.rz[,annot$a_gene_id[which(annot$gene_symbol=="Agl")]]
-CYP2U1.adipose <- adipose.rz[,annot$a_gene_id[which(annot$gene_symbol=="Cyp2u1")]]
+x11()
+par(mfrow=c(3,2))
+hist(FBN1.adipose)
+hist(CYP4V3.adipose)
+hist(CYP2U1.adipose)
+hist(GNG8.adipose)
+hist(NCOR2.adipose)
+hist(SREBF1.adipose)
+par(mfrow=c(1,1))
 
 FBN1.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Fbn1")]]
-SIRT1.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Sirt1")]]
-BMAL1.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Arntl")]]
-PIK3CG.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Pik3cg")]]
-NR1H3.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Nr1h3")]]
+CYP4V3.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Cyp4v3")]]
+CYP2U1.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Cyp2u1")]]
+GNG8.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Gng8")]]
 NCOR2.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Ncor2")]]
 SREBF1.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Srebf1")]]
-TGFB1.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Tgfb1")]]
-GPSM2.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Gpsm2")]]
-CNN3.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Cnn3")]]
-PLA2G12A.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Pla2g12a")]]
-S1PR1.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Fndc7")]]
-AGL.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Agl")]]
-CYP2U1.liver <- liver.rz[,annot$a_gene_id[which(annot$gene_symbol=="Cyp2u1")]]
+x11()
+par(mfrow=c(3,2))
+hist(FBN1.liver)
+hist(CYP4V3.liver)
+hist(CYP2U1.liver)
+hist(GNG8.liver)
+hist(NCOR2.liver)
+hist(SREBF1.liver)
+par(mfrow=c(1,1))
 
 f2g$pheno <- cbind(f2g$pheno[,c("MouseNum","Sex","pgm")],phenotypes.rz[c("CHOL", "GLU.8wk", "TRIG.8wk", "TG.homogenate", "Liver.wt", "Leptin")],FBN1.adipose, SIRT1.adipose, BMAL1.adipose, PIK3CG.adipose, NR1H3.adipose, NCOR2.adipose, SREBF1.adipose)
 f2g$pheno <- cbind(f2g$pheno[,c("MouseNum","Sex","pgm")],phenotypes.rz[c("CHOL", "GLU.8wk", "TRIG.8wk", "TG.homogenate", "Liver.wt", "Leptin")],FBN1.adipose, BMAL1.adipose)
 f2g$pheno <- cbind(f2g$pheno[,c("MouseNum","Sex","pgm")],FBN1.adipose, SIRT1.adipose, BMAL1.adipose, PIK3CG.adipose, NR1H3.adipose, NCOR2.adipose, SREBF1.adipose, TGFB1.adipose)
 f2g$pheno <- cbind(f2g$pheno[,c("MouseNum","Sex","pgm")],FBN1.liver, SIRT1.liver, BMAL1.liver, PIK3CG.liver, NR1H3.liver, NCOR2.liver, SREBF1.liver, TGFB1.liver)
 f2g$pheno <- cbind(f2g$pheno[,c("MouseNum","Sex","pgm")], FBN1.adipose, SIRT1.adipose, BMAL1.adipose, PIK3CG.adipose, NR1H3.adipose, NCOR2.adipose, SREBF1.adipose, TGFB1.adipose, GPSM2.adipose, CNN3.adipose, PLA2G12A.adipose, S1PR1.adipose, AGL.adipose, CYP2U1.adipose)
+f2g$pheno <- cbind(f2g$pheno[,c("MouseNum","Sex","pgm")], FBN1.adipose, CYP4V3.liver, CYP2U1.liver)
+f2g$pheno <- cbind(f2g$pheno[,c("MouseNum","Sex","pgm")], FBN1.liver, CYP4V3.liver, CYP2U1.liver)
+
 names(f2g$pheno)
 
-setwd("net7-data")
+setwd("net8-data")
 
 # Step 0:  Load qtlnet
 library(qtlnet)
@@ -181,7 +186,7 @@ save(file="out1.RData", out1)
 # Opening data from previous runs
 ###################################
 setwd("..")
-setwd("net7-data")
+setwd("net9-data")
 load(file="out1.RData")
 summary(out1)
 plot(out1)
