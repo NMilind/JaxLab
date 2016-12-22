@@ -73,3 +73,30 @@ pairs.phenos.double <- function(data1.g, genes1, data2.g, genes2, data.p, phenos
   x11()
   pairs(f2g$pheno[,4:length(f2g$pheno)], main=main, upper.panel=panel.cor, diag.panel=panel.hist)
 }
+
+#################################################
+## RECEPTOR STUDIES                            ##
+#################################################
+
+# Chromosome 3
+genes <- c("Gnai3", "Gnat2", "Gpr61", "Celsr2", "Gpsm2", "Gpr88")
+pairs.simple(data=adipose.rz, genes=c(c("Fbn1"), genes), main="FBN1 with Chr3 Adipose Gene Expression")
+pairs.double(data1=adipose.rz, genes1=c("Fbn1"), data2=liver.rz, genes2=genes, main="FBN1 with Chr3 Liver Gene Expression")
+pairs.simple(data=liver.rz, genes=c(c("Fbn1"), genes), main="FBN1 (Liver) with Chr3 Liver Gene Expression")
+pairs.double(data1=liver.rz, genes1=c("Fbn1"), data2=adipose.rz, genes2=genes, main="FBN1 (Liver) with Chr3 Adipose Gene Expression")
+
+# Chromosome 7
+genes <- c("Grik5", "Gng8", "Gpr4")
+pairs.simple(data=adipose.rz, genes=c(c("Fbn1"), genes), main="FBN1 with Chr7 Adipose Gene Expression")
+pairs.double(data1=adipose.rz, genes1=c("Fbn1"), data2=liver.rz, genes2=genes, main="FBN1 with Chr7 Liver Gene Expression")
+pairs.simple(data=liver.rz, genes=c(c("Fbn1"), genes), main="FBN1 (Liver) with Chr7 Liver Gene Expression")
+pairs.double(data1=liver.rz, genes1=c("Fbn1"), data2=adipose.rz, genes2=genes, main="FBN1 (Liver) with Chr7 Adipose Gene Expression")
+
+# Chromosome 8
+genes <- c("Npy1r", "Npy5r", "Tm6sf2", "Gpr114")
+pairs.simple(data=adipose.rz, genes=c(c("Fbn1"), genes), main="FBN1 with Chr8 Adipose Gene Expression")
+pairs.double(data1=adipose.rz, genes1=c("Fbn1"), data2=liver.rz, genes2=genes, main="FBN1 with Chr8 Liver Gene Expression")
+pairs.simple(data=liver.rz, genes=c(c("Fbn1"), genes), main="FBN1 (Liver) with Chr8 Liver Gene Expression")
+pairs.double(data1=liver.rz, genes1=c("Fbn1"), data2=adipose.rz, genes2=genes, main="FBN1 (Liver) with Chr8 Adipose Gene Expression")
+
+runQTLNet(genes.adipose=c("Fbn1"), genes.liver=c("Gpsm2", "Gnai3"))

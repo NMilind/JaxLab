@@ -12,7 +12,6 @@ runQTLNet <- function(genes.adipose=c(), genes.liver=c(), phenos=c()) {
   # Clear memory for QTLNet usage
   gc()
   
-  setwd("~/Desktop/JaxLab")
   # Import data and important functions
   source("src/configuration.R")
   
@@ -35,8 +34,7 @@ runQTLNet <- function(genes.adipose=c(), genes.liver=c(), phenos=c()) {
   ## SETUP WORKING DiRECTORY                     ##
   #################################################
   
-  setwd("data/net-data")
-  do.call(file.remove, list(list.files("~/Desktop/JaxLab/data/net-data/", full.names=TRUE)))
+  do.call(file.remove, list(list.files("data/net-data/", full.names=TRUE)))
   
   library(qtlnet)
   
@@ -57,7 +55,7 @@ runQTLNet <- function(genes.adipose=c(), genes.liver=c(), phenos=c()) {
   # Groups the parents into approximately equal sizes for parallel computation
   groups <- group.qtlnet(parents=parents, group.size=8)
   # Save the data
-  save(f2g, pheno.col, max.parents, parents, groups, file="Step1.RData", compress=TRUE)
+  save(f2g, pheno.col, max.parents, parents, groups, file="data/net-data/Step1.RData", compress=TRUE)
   pa <- summary(parents)
   
   #################################################
@@ -79,19 +77,19 @@ runQTLNet <- function(genes.adipose=c(), genes.liver=c(), phenos=c()) {
                       parents=parents[seq(groups[i,1], groups[i,2])], 
                       verbose=FALSE)
     cat("BIC Groups Row", i, "\n")
-    save(bic, file=paste("bic", i, ".RData", sep=""), compress=TRUE)
+    save(bic, file=paste("data/net-data/bic", i, ".RData", sep=""), compress=TRUE)
   }
   
   #################################################
   ## PARALLELIZED MARKOV CHAIN MODEL             ##
   #################################################
   
-  load(file="Step1.RData")
+  load(file="data/net-data/Step1.RData")
   
   # Read and save the BIC scores into one object
   bic.group <- list()
   for (i in seq(nrow(groups))) {
-    load(file=paste("bic", i, ".RData", sep=""))
+    load(file=paste("data/net-data/bic", i, ".RData", sep=""))
     bic.group[[i]] <- bic
     cat("Compiled Group", i, "\n")
   }
@@ -113,7 +111,7 @@ runQTLNet <- function(genes.adipose=c(), genes.liver=c(), phenos=c()) {
                         max.parents=max.parents, 
                         saved.scores=saved.scores, 
                         init.edges=NULL)
-    save(mcmc, file=paste("mcmc", i, ".RData", sep=""), compress=TRUE)
+    save(mcmc, file=paste("data/net-data/mcmc", i, ".RData", sep=""), compress=TRUE)
   }
   
   #################################################
@@ -122,7 +120,7 @@ runQTLNet <- function(genes.adipose=c(), genes.liver=c(), phenos=c()) {
   
   outs.qtlnet <-list()
   for (i in seq(n.runs)){
-    load(paste("mcmc", i, ".RData", sep=""))
+    load(paste("data/net-data/mcmc", i, ".RData", sep=""))
     outs.qtlnet[[i]] <- mcmc
   }
   
@@ -135,14 +133,14 @@ runQTLNet <- function(genes.adipose=c(), genes.liver=c(), phenos=c()) {
   plot(output)
   
   # Save for Future Use
-  save(file="output.RData", output)
+  save(file="data/net-data/output.RData", output)
 }
 
 #################################################
 ## LOAD OUTPUT AND VIEW                        ##
 #################################################
 
-loadQTLOutput <- function(loadfile="~/Desktop/JaxLab/data/net-data/output.RData") {
+loadQTLOutput <- function(loadfile="data/net-data/output.RData") {
   
   load(file=loadfile)
   print(summary(output))
