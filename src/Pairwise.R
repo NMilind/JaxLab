@@ -38,7 +38,7 @@ pairs.double <- function(data1, genes1, data2, genes2, main="Pair Matrix Scan") 
   x11()
   pairs(f2g$pheno[,4:length(f2g$pheno)], main=main, labels=c(genes1, genes2), upper.panel=panel.cor, diag.panel=panel.hist)
 }
-pairs.phenos <- function(data.g, genes, data.p, phenos, main="Pair Matrix Scan") {
+pairs.phenos.simple <- function(data.g, genes, data.p, phenos, main="Pair Matrix Scan") {
   
   f2g$pheno <- f2g$pheno[,c("MouseNum", "Sex", "pgm")]
   for (i in 1:length(genes)) {
@@ -54,6 +54,22 @@ pairs.phenos <- function(data.g, genes, data.p, phenos, main="Pair Matrix Scan")
   x11()
   pairs(f2g$pheno[,4:length(f2g$pheno)], main=main, upper.panel=panel.cor, diag.panel=panel.hist)
 }
-
-pairs.phenos(data.g=adipose.rz, genes=c("Pparg"), data.p=(phenotypes[,c("GLU.4wk", "GLU.6wk", "GLU.8wk", "GLU.10wk")]), phenos=c("GLU.4wk", "GLU.6wk", "GLU.8wk", "GLU.10wk"))
-runQTLNet(genes.adipose=c("Pparg"), genes.liver=c("Agl"), phenos=c("GLU.4wk"))
+pairs.phenos.double <- function(data1.g, genes1, data2.g, genes2, data.p, phenos, main="Pair Matrix Scan") {
+  
+  f2g$pheno <- f2g$pheno[,c("MouseNum", "Sex", "pgm")] 
+  for (i in 1:length(genes1)) {
+    f2g$pheno <- cbind(f2g$pheno, data1.g[,annot$a_gene_id[which(annot$gene_symbol==genes1[i])]])
+  }
+  for (i in 1:length(genes2)) {
+    f2g$pheno <- cbind(f2g$pheno, data2.g[,annot$a_gene_id[which(annot$gene_symbol==genes2[i])]])
+  }
+  for (i in 1:length(phenos)) {
+    f2g$pheno <- cbind(f2g$pheno, data.p[,phenos[i]])
+  }
+  names(f2g$pheno) <- c(c("MouseNum", "Sex", "pgm"), genes1, genes2, phenos)
+  names(f2g$pheno)
+  
+  # Scatterplot Matrices
+  x11()
+  pairs(f2g$pheno[,4:length(f2g$pheno)], main=main, upper.panel=panel.cor, diag.panel=panel.hist)
+}
