@@ -12,9 +12,6 @@ runQTLNet <- function(genes.adipose=c(), genes.liver=c(), phenos=c()) {
   # Clear memory for QTLNet usage
   gc()
   
-  # Import data and important functions
-  source("src/configuration.R")
-  
   #################################################
   ## SETUP GENES AND PHENOTYPES                  ##
   #################################################
@@ -35,8 +32,6 @@ runQTLNet <- function(genes.adipose=c(), genes.liver=c(), phenos=c()) {
   #################################################
   
   do.call(file.remove, list(list.files("data/net-data/", full.names=TRUE)))
-  
-  library(qtlnet)
   
   #################################################
   ## SETUP FOR NETWORK                           ##

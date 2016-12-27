@@ -99,4 +99,82 @@ pairs.double(data1=adipose.rz, genes1=c("Fbn1"), data2=liver.rz, genes2=genes, m
 pairs.simple(data=liver.rz, genes=c(c("Fbn1"), genes), main="FBN1 (Liver) with Chr8 Liver Gene Expression")
 pairs.double(data1=liver.rz, genes1=c("Fbn1"), data2=adipose.rz, genes2=genes, main="FBN1 (Liver) with Chr8 Adipose Gene Expression")
 
-runQTLNet(genes.adipose=c("Fbn1"), genes.liver=c("Gpsm2", "Gnai3"))
+# GNG8-Related Pathway: GHRH AKT Signaling
+genes <- c("Akt3", "Pfkfb2", "Hk2", "Gys1", "Gys2", "Tbc1d4", "Acly", "Cd19")
+pairs.simple(data=adipose.rz, genes=c(c("Fbn1"), genes), main="Adipose Gene Expression")
+pairs.double(data1=adipose.rz, genes1=c("Fbn1"), data2=liver.rz, genes2=genes, main="Liver Gene Expression")
+pairs.simple(data=liver.rz, genes=c(c("Fbn1"), genes), main="Liver Gene Expression (w/ FBN1 Liver)")
+pairs.double(data1=liver.rz, genes1=c("Fbn1"), data2=adipose.rz, genes2=genes, main="Adipose Gene Expression (w/ FBN1 Liver)")
+
+# GNG8-Related Pathway: GHRH PKA Signaling
+genes <- c("Prkaca", "Prkacb", "Pygm", "Lipe")
+pairs.simple(data=adipose.rz, genes=c(c("Fbn1"), genes), main="Adipose Gene Expression")
+pairs.double(data1=adipose.rz, genes1=c("Fbn1"), data2=liver.rz, genes2=genes, main="Liver Gene Expression")
+pairs.simple(data=liver.rz, genes=c(c("Fbn1"), genes), main="Liver Gene Expression (w/ FBN1 Liver)")
+pairs.double(data1=liver.rz, genes1=c("Fbn1"), data2=adipose.rz, genes2=genes, main="Adipose Gene Expression (w/ FBN1 Liver)")
+
+# PKA/PKB/GPCR Signaling
+genes <- c("Gpr12", "Rabgap1,Gpr21", "Gpr39", "Gpr50")
+genes <- c("Gpr61", "Gpr62", "Gpr82", "Gpr119")
+genes <- c("Gpr146", "Gpr171", "Gprc5b", "Tpra1")
+pairs.simple(data=adipose.rz, genes=c(c("Fbn1"), genes), main="Adipose Gene Expression")
+pairs.double(data1=adipose.rz, genes1=c("Fbn1"), data2=liver.rz, genes2=genes, main="Liver Gene Expression")
+pairs.simple(data=liver.rz, genes=c(c("Fbn1"), genes), main="Liver Gene Expression (w/ FBN1 Liver)")
+pairs.double(data1=liver.rz, genes1=c("Fbn1"), data2=adipose.rz, genes2=genes, main="Adipose Gene Expression (w/ FBN1 Liver)")
+
+# Class A Orphan Receptor Candidates
+# Gpr12, Gpr21, Gpr50, Gpr62, Gpr82, Gpr119, Gpr146, Gprc5b
+genes <- c("Gpr12", "Rabgap1,Gpr21", "Gpr50", "Gpr62", "Gpr82", "Gpr119", "Gpr146", "Gprc5b")
+pairs.phenos.simple(data.g=liver.rz, genes=genes, data.p=log(phenotypes[,c("INS.4wk", "NEFA")]), phenos=c("INS.4wk"))
+pairs.phenos.simple(data.g=liver.rz, genes=genes, data.p=log(phenotypes[,c("INS.6wk", "NEFA")]), phenos=c("INS.6wk"))
+pairs.phenos.simple(data.g=liver.rz, genes=genes, data.p=log(phenotypes[,c("INS.8wk", "NEFA")]), phenos=c("INS.8wk"))
+pairs.phenos.simple(data.g=liver.rz, genes=genes, data.p=log(phenotypes[,c("INS.10wk", "NEFA")]), phenos=c("INS.10wk"))
+pairs.phenos.simple(data.g=liver.rz, genes=genes, data.p=log(phenotypes[,c("GLU.4wk", "NEFA")]), phenos=c("GLU.4wk"))
+pairs.phenos.simple(data.g=liver.rz, genes=genes, data.p=log(phenotypes[,c("GLU.6wk", "NEFA")]), phenos=c("GLU.6wk"))
+pairs.phenos.simple(data.g=liver.rz, genes=genes, data.p=log(phenotypes[,c("GLU.8wk", "NEFA")]), phenos=c("GLU.8wk"))
+pairs.phenos.simple(data.g=liver.rz, genes=genes, data.p=log(phenotypes[,c("GLU.10wk", "NEFA")]), phenos=c("GLU.10wk"))
+pairs.phenos.simple(data.g=liver.rz, genes=genes, data.p=log(phenotypes[,c("HOMA.4wk", "NEFA")]), phenos=c("HOMA.4wk"))
+pairs.phenos.simple(data.g=liver.rz, genes=genes, data.p=log(phenotypes[,c("HOMA.6wk", "NEFA")]), phenos=c("HOMA.6wk"))
+pairs.phenos.simple(data.g=liver.rz, genes=genes, data.p=log(phenotypes[,c("HOMA.8wk", "NEFA")]), phenos=c("HOMA.8wk"))
+pairs.phenos.simple(data.g=liver.rz, genes=genes, data.p=log(phenotypes[,c("HOMA.10wk", "NEFA")]), phenos=c("HOMA.10wk"))
+pairs.phenos.simple(data.g=liver.rz, genes=genes, data.p=log(phenotypes[,c("Liver.wt.1", "NEFA")]), phenos=c("Liver.wt.1"))
+pairs.phenos.simple(data.g=liver.rz, genes=genes, data.p=log(phenotypes[,c("Fat.wt", "NEFA")]), phenos=c("Fat.wt"))
+
+# Class A Orphan Receptor Candidates
+# Gpr12, Gpr21, Gprc5b
+
+runQTLNet(genes.adipose=c("Fbn1"), genes.liver=c("Gpr12", "Prkaca", "Akt3"))
+runQTLNet(genes.adipose=c("Fbn1"), genes.liver=c("Gpr12"), phenos=c("INS.10wk"))
+runQTLNet(genes.adipose=c("Fbn1"), genes.liver=c("Gpr12"), phenos=c("GLU.10wk"))
+runQTLNet(genes.adipose=c("Fbn1"), genes.liver=c("Gpr12"), phenos=c("Fat.wt"))
+
+annot["10028674547.1",]$gene_symbol <- "Gpr21"
+runQTLNet(genes.adipose=c("Fbn1"), genes.liver=c("Gpr21", "Prkaca", "Akt3"))
+runQTLNet(genes.adipose=c("Fbn1"), genes.liver=c("Gpr21"), phenos=c("INS.10wk"))
+runQTLNet(genes.adipose=c("Fbn1"), genes.liver=c("Gpr21"), phenos=c("GLU.10wk"))
+runQTLNet(genes.adipose=c("Fbn1"), genes.liver=c("Gpr21"), phenos=c("Fat.wt"))
+annot["10028674547.1",]$gene_symbol <- "Rabgap1,Gpr21"
+
+runQTLNet(genes.adipose=c("Fbn1"), genes.liver=c("Gprc5b", "Prkaca", "Akt3"))
+runQTLNet(genes.adipose=c("Fbn1"), genes.liver=c("Gprc5b"), phenos=c("INS.10wk"))
+runQTLNet(genes.adipose=c("Fbn1"), genes.liver=c("Gprc5b"), phenos=c("GLU.10wk"))
+runQTLNet(genes.adipose=c("Fbn1"), genes.liver=c("Gprc5b"), phenos=c("Fat.wt"))
+
+# Insulin-Transduction-Like Tyrosine Kinase Signaling
+genes <- c("Insr", "Igf1r")
+genes <- c("Fgfr1", "Fgfr3", "Fgfr4")
+genes <- c("Pik3ca", "Pik3cb", "Pik3cg", "Gsk3b")
+pairs.simple(data=adipose.rz, genes=c(c("Fbn1"), genes), main="Adipose Gene Expression")
+pairs.double(data1=adipose.rz, genes1=c("Fbn1"), data2=liver.rz, genes2=genes, main="Liver Gene Expression")
+pairs.simple(data=liver.rz, genes=c(c("Fbn1"), genes), main="Liver Gene Expression (w/ FBN1 Liver)")
+pairs.double(data1=liver.rz, genes1=c("Fbn1"), data2=adipose.rz, genes2=genes, main="Adipose Gene Expression (w/ FBN1 Liver)")
+
+# Previous research has shown that Asprosin acts as an effector adipokine
+# Tests have revealed that it binds to surface receptors on hepatocytes
+# Further tests have shown that it utilizes the G Protein-cAMP-PKA axis to do so
+# Insulin was also found to suppress the action of asprosin (competitively)
+
+# Our initial tests suggest that Gng8 (G Protein gamma, part of the beta-gamma machinery) is correlated with Fbn1 expression
+# Since Insulin competitevly inhibits asprosin action, there is also the likelihood of a tyrosine-kinase receptor
+# We identify Class A G-Protein Coupled Receptors (Orphans) that are correlated with Fbn1
+# Results also suggest that the pathways either overlap or a tyrosine-kinase receptor may also affect the situation
