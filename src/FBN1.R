@@ -45,7 +45,7 @@ load(file="data/FBN1-FBN1.adipose.perms.RData")
 FBN1.adipose.scan1 <- scanone(f2g, pheno.col=4, addcovar=sex, method="hk")
 
 # Plot the LOD scan with thresholds from the permutations
-x11()
+graphics.open()
 plot(FBN1.adipose.scan1, lodcolumn=1, main="FBN1 LOD for Variation across Mouse Genome")
 add.threshold(FBN1.adipose.scan1, perms=FBN1.adipose.perms, alpha=0.05, lty="dashed", lwd=1, col="green")
 add.threshold(FBN1.adipose.scan1, perms=FBN1.adipose.perms, alpha=0.10, lty="dashed", lwd=1, col="orange")
@@ -75,7 +75,7 @@ summary(FBN1.adipose.scan1, perms=FBN1.adipose.perms, alpha=0.63, format="tabByC
 
 graphics.off()
 # Compare phenotypes to genotypes at identified QTL
-x11()
+graphics.open()
 par(mfrow=c(2,2))
 plot.pxg(f2g, find.marker(f2g, chr=1, pos=76.64), pheno.col=4, main="FBN1 QTL Chr1@76.64 cM")
 plot.pxg(f2g, find.marker(f2g, chr=3, pos=49.12), pheno.col=4, main="FBN1 QTL Chr3@49.12 cM")
@@ -84,7 +84,7 @@ plot.pxg(f2g, find.marker(f2g, chr="X", pos=8.60), pheno.col=4, main="FBN1 QTL C
 par(mfrow=c(1,1))
 
 # Effect plots of the QTL
-x11()
+graphics.open()
 par(mfrow=c(2,2))
 effectplot(f2g, pheno.col=4, mname1=find.marker(f2g, chr=1, pos=76.64), main="FBN1 QTL Chr1@76.64 cM")
 effectplot(f2g, pheno.col=4, mname1=find.marker(f2g, chr=3, pos=49.12), main="FBN1 QTL Chr3@49.12 cM")
@@ -93,12 +93,12 @@ effectplot(f2g, pheno.col=4, mname1=find.marker(f2g, chr="X", pos=8.60), main="F
 par(mfrow=c(1,1))
 
 # Effect plots by sex
-x11()
+graphics.open()
 effectplot(f2g, pheno.col=4, mname1="Sex", mark1=f2g$pheno$Sex, mname2=find.marker(f2g, chr=3, pos=49.12), main="FBN1 QTL Chr3@49.12 cM")
 effectplot(f2g, pheno.col=4, mname1="Sex", mark1=f2g$pheno$Sex, mname2=find.marker(f2g, chr=7, pos=6.14), main="FBN1 QTL Chr7@6.14 cM")
 
 # Obtain confidence intervals for QTL LOD peaks
-x11()
+graphics.open()
 par(mfrow=c(2,2))
 CI.Chr1 <- bayesint(FBN1.adipose.scan1, chr=1, prob=0.95)
 plot(FBN1.adipose.scan1, chr=1, lodcolumn=1, main="Confidence Interval for Chr1")
@@ -132,7 +132,7 @@ graphics.off()
 FBN1.adipose.scan2 <- scanone(f2g, pheno.col=4, addcovar=f2g$geno$'3'$data[,find.marker(f2g, chr=3, pos=49.12)], method="hk")
 
 # Plot the LOD scan with thresholds from the permutations
-x11()
+graphics.open()
 plot(FBN1.adipose.scan2, lodcolumn=1, main="FBN1 LOD for Variation across Mouse Genome")
 add.threshold(FBN1.adipose.scan2, perms=FBN1.adipose.perms, alpha=0.05, lty="dashed", lwd=1, col="green")
 add.threshold(FBN1.adipose.scan2, perms=FBN1.adipose.perms, alpha=0.10, lty="dashed", lwd=1, col="orange")
@@ -144,7 +144,7 @@ add.threshold(FBN1.adipose.scan2, perms=FBN1.adipose.perms, alpha=0.63, lty="das
 FBN1.adipose.scan3 <- scanone(f2g, pheno.col=4, addcovar=f2g$geno$'7'$data[,find.marker(f2g, chr=7, pos=6.14)], method="hk")
 
 # Plot the LOD scan with thresholds from the permutations
-x11()
+graphics.open()
 plot(FBN1.adipose.scan3, lodcolumn=1, main="FBN1 LOD for Variation across Mouse Genome")
 add.threshold(FBN1.adipose.scan3, perms=FBN1.adipose.perms, alpha=0.05, lty="dashed", lwd=1, col="green")
 add.threshold(FBN1.adipose.scan3, perms=FBN1.adipose.perms, alpha=0.10, lty="dashed", lwd=1, col="orange")
@@ -153,17 +153,17 @@ add.threshold(FBN1.adipose.scan3, perms=FBN1.adipose.perms, alpha=0.63, lty="das
 
 # QTL Effect Plots
 graphics.off()
-x11()
+graphics.open()
 effectplot(f2g, pheno.col=4, mname2=find.marker(f2g, chr=1, pos=76.64), mname1=find.marker(f2g, chr=3, pos=49.12), main="Chr1@76.64 cM x Chr3@49.12 cM")
-x11()
+graphics.open()
 effectplot(f2g, pheno.col=4, mname2=find.marker(f2g, chr=1, pos=76.64), mname1=find.marker(f2g, chr=7, pos=6.14), main="Chr1@76.64 cM x Chr7@6.14 cM")
-x11()
+graphics.open()
 effectplot(f2g, pheno.col=4, mname1=find.marker(f2g, chr=1, pos=76.64), mname2=find.marker(f2g, chr="X", pos=8.60), main="Chr1@76.64 cM X ChrX@8.60 cM")
-x11()
+graphics.open()
 effectplot(f2g, pheno.col=4, mname2=find.marker(f2g, chr=3, pos=49.12), mname1=find.marker(f2g, chr=7, pos=6.14), main="Chr3@49.12 cM x Chr7@6.14 cM")
-x11()
+graphics.open()
 effectplot(f2g, pheno.col=4, mname1=find.marker(f2g, chr=3, pos=49.12), mname2=find.marker(f2g, chr="X", pos=8.60), main="Chr3@49.12 cM x ChrX@8.60 cM")
-x11()
+graphics.open()
 effectplot(f2g, pheno.col=4, mname2=find.marker(f2g, chr=7, pos=6.14), mname1=find.marker(f2g, chr="X", pos=8.60), main="Chr7@6.14 cM x ChrX@8.60 cM")
 
 # Run a two-qtl scan over f2g
@@ -180,7 +180,7 @@ summary(FBN1.adipose.scan4, c(9.1, 7.1, 6.3, 6.3, 3.3), "best")
 graphics.off()
 
 # Plot the results of the two-qtl scan
-x11()
+graphics.open()
 plot(FBN1.adipose.scan4)
 
 # Make a QTL Model
@@ -237,7 +237,7 @@ load(file="data/FBN1-FBN1.liver.perms.RData")
 FBN1.liver.scan1 <- scanone(f2g, pheno.col=4, addcovar=sex, method="hk")
 
 # Plot the LOD scan with thresholds from the permutations
-x11()
+graphics.open()
 plot(FBN1.liver.scan1, lodcolumn=1, main="FBN1 LOD for Variation across Mouse Genome")
 add.threshold(FBN1.liver.scan1, perms=FBN1.liver.perms, alpha=0.05, lty="dashed", lwd=1, col="green")
 add.threshold(FBN1.liver.scan1, perms=FBN1.liver.perms, alpha=0.10, lty="dashed", lwd=1, col="orange")
@@ -263,7 +263,7 @@ summary(FBN1.liver.scan1, perms=FBN1.liver.perms, alpha=0.63, format="tabByCol",
 FBN1.liver.scan2 <- scanone(f2g, pheno.col=4, addcovar=f2g$geno$'15'$data[,find.marker(f2g, chr=15, pos=43.63)], method="hk")
 
 # Plot scan results
-x11()
+graphics.open()
 plot(FBN1.liver.scan2, lodcolumn=1, main="Liver Tissue with Chr15 Covariate")
 add.threshold(FBN1.liver.scan2, perms=FBN1.liver.perms, alpha=0.05, lty="dashed", lwd=1, col="green")
 add.threshold(FBN1.liver.scan2, perms=FBN1.liver.perms, alpha=0.10, lty="dashed", lwd=1, col="orange")
@@ -285,19 +285,19 @@ summary(FBN1.liver.scan2, perms=FBN1.liver.perms, alpha=0.63, format="tabByCol",
 # rs13481295  12  4.86   4.77    33.5 3.10
 
 # Compare phenotypes to genotypes at identified QTL
-x11()
+graphics.open()
 plot.pxg(f2g, find.marker(f2g, chr=8, pos=28), pheno.col=4, main="FBN1 QTL Chr8@28.00 cM")
 
 # Effect plots of the QTL
-x11()
+graphics.open()
 effectplot(f2g, pheno.col=4, mname1=find.marker(f2g, chr=8, pos=28), main="FBN1 QTL Chr8@28.00 cM")
 
 # Effect plots by sex
-x11()
+graphics.open()
 effectplot(f2g, pheno.col=4, mname1="Sex", mark1=f2g$pheno$Sex, mname2=find.marker(f2g, chr=8, pos=28), main="FBN1 QTL Chr8@28.00 cM")
 
 # Obtain confidence intervals for QTL LOD peaks
-x11()
+graphics.open()
 CI.Chr8 <- bayesint(FBN1.liver.scan2, chr=8, prob=0.95)
 plot(FBN1.liver.scan2, chr=8, lodcolumn=1, main="Confidence Interval for Chr8")
 lines(x=CI.Chr8[c(1,3),2], y=c(0,0), type="l", col="#00FF00", lwd=4)
@@ -319,7 +319,7 @@ summary(FBN1.liver.scan3, c(9.1, 7.1, 6.3, 6.3, 3.3), "best")
 graphics.off()
 
 # Plot the results of the two-qtl scan
-x11()
+graphics.open()
 plot(FBN1.liver.scan3)
 
 # Make a QTL Model
@@ -376,7 +376,7 @@ load(file="data/FBN1-FBN1.gastroc.perms.RData")
 FBN1.gastroc.scan1 <- scanone(f2g, pheno.col=4, addcovar=sex, method="hk")
 
 # Plot the LOD scan with thresholds from the permutations
-x11()
+graphics.open()
 plot(FBN1.gastroc.scan1, lodcolumn=1, main="FBN1 LOD for Variation across Mouse Genome")
 add.threshold(FBN1.gastroc.scan1, perms=FBN1.gastroc.perms, alpha=0.05, lty="dashed", lwd=1, col="green")
 add.threshold(FBN1.gastroc.scan1, perms=FBN1.gastroc.perms, alpha=0.10, lty="dashed", lwd=1, col="orange")
@@ -407,26 +407,26 @@ summary(FBN1.gastroc.scan1, perms=FBN1.gastroc.perms, alpha=0.63, format="tabByC
 
 graphics.off()
 # Compare phenotypes to genotypes at identified QTL
-x11()
+graphics.open()
 par(mfrow=c(1,2))
 plot.pxg(f2g, find.marker(f2g, chr=9, pos=40.10), pheno.col=4, main="FBN1 QTL Chr9@40.10 cM")
 plot.pxg(f2g, find.marker(f2g, chr=17, pos=14.60), pheno.col=4, main="FBN1 QTL Chr17@14.60 cM")
 par(mfrow=c(1,1))
 
 # Effect plots of the QTL
-x11()
+graphics.open()
 par(mfrow=c(1,2))
 effectplot(f2g, pheno.col=4, mname1=find.marker(f2g, chr=9, pos=40.10), main="FBN1 QTL Chr9@40.10 cM")
 effectplot(f2g, pheno.col=4, mname1=find.marker(f2g, chr=17, pos=14.60), main="FBN1 QTL Chr17@14.60 cM")
 par(mfrow=c(1,1))
 
 # Effect plots by sex
-x11()
+graphics.open()
 effectplot(f2g, pheno.col=4, mname1="Sex", mark1=f2g$pheno$Sex, mname2=find.marker(f2g, chr=9, pos=40.10), main="FBN1 QTL Chr9@40.10 cM")
 effectplot(f2g, pheno.col=4, mname1="Sex", mark1=f2g$pheno$Sex, mname2=find.marker(f2g, chr=17, pos=14.60), main="FBN1 QTL Chr17@14.60 cM")
 
 # Obtain confidence intervals for QTL LOD peaks
-x11()
+graphics.open()
 par(mfrow=c(1,2))
 CI.Chr9 <- bayesint(FBN1.gastroc.scan1, chr=9, prob=0.95)
 plot(FBN1.gastroc.scan1, chr=9, lodcolumn=1, main="Confidence Interval for Chr9")
@@ -450,7 +450,7 @@ graphics.off()
 FBN1.gastroc.scan2 <- scanone(f2g, pheno.col=4, addcovar=f2g$geno$'17'$data[,find.marker(f2g, chr=17, pos=14.60)], method="hk")
 
 # Plot the LOD scan with thresholds from the permutations
-x11()
+graphics.open()
 plot(FBN1.gastroc.scan2, lodcolumn=1, main="FBN1 LOD for Variation across Mouse Genome")
 add.threshold(FBN1.gastroc.scan2, perms=FBN1.gastroc.perms, alpha=0.05, lty="dashed", lwd=1, col="green")
 add.threshold(FBN1.gastroc.scan2, perms=FBN1.gastroc.perms, alpha=0.10, lty="dashed", lwd=1, col="orange")
@@ -461,7 +461,7 @@ add.threshold(FBN1.gastroc.scan2, perms=FBN1.gastroc.perms, alpha=0.63, lty="das
 FBN1.gastroc.scan3 <- scanone(f2g, pheno.col=4, addcovar=f2g$geno$'9'$data[,find.marker(f2g, chr=9, pos=40.10)], method="hk")
 
 # Plot the LOD scan with thresholds from the permutations
-x11()
+graphics.open()
 plot(FBN1.gastroc.scan3, lodcolumn=1, main="FBN1 LOD for Variation across Mouse Genome")
 add.threshold(FBN1.gastroc.scan3, perms=FBN1.gastroc.perms, alpha=0.05, lty="dashed", lwd=1, col="green")
 add.threshold(FBN1.gastroc.scan3, perms=FBN1.gastroc.perms, alpha=0.10, lty="dashed", lwd=1, col="orange")
@@ -470,7 +470,7 @@ add.threshold(FBN1.gastroc.scan3, perms=FBN1.gastroc.perms, alpha=0.63, lty="das
 
 # QTL Effect Plots
 graphics.off()
-x11()
+graphics.open()
 effectplot(f2g, pheno.col=4, mname2=find.marker(f2g, chr=9, pos=40.10), mname1=find.marker(f2g, chr=17, pos=14.60), main="Chr9@40.10 cM x Chr17@14.60 cM")
 
 # Run a two-qtl scan over f2g
@@ -487,7 +487,7 @@ effectplot(f2g, pheno.col=4, mname2=find.marker(f2g, chr=9, pos=40.10), mname1=f
 #graphics.off()
 
 # Plot the results of the two-qtl scan
-#x11()
+#graphics.open()
 #plot(FBN1.adipose.scan4)
 
 # Make a QTL Model

@@ -4,29 +4,7 @@
 #  updated January 7, 2014 - GAC
 ###########################################################
 # 
-#set working directory
-setwd("/home/nikhil/Desktop/BTBR")
-
-#load qtl library
-library(qtl)
-
-#load graphics package  (http://had.co.nz/ggplot2/)
-library(ggplot2)
-
-####
-# some useful plotting functions
-# see documentation for "pairs" function 
-setwd("src")
-source("important_func.R")
-####end useful plotting function
-setwd("..")
-
-##########################################################
-#read cross data into R environment
-setwd("data")
-load("BTBR.clean.data.Rdata")
-setwd("..")
-ls()
+source("src/configuration.R")
 
 names(phenotypes.rz)
 #we are going to look at LDL, HDL and CHOL
@@ -39,28 +17,28 @@ f2g$pheno <- cbind(f2g$pheno[,c("MouseNum","Sex","pgm")],phenotypes.rz[,c("LDL",
 names(f2g$pheno)
 
 #look at histrograms of data by sex
-x11()
+graphics.open()
 qplot(CHOL, facets=Sex~., data=f2g$pheno)
-x11()
+graphics.open()
 qplot(HDL, facets=Sex~., data=f2g$pheno)
-x11()
+graphics.open()
 qplot(LDL, facets=Sex~., data=f2g$pheno)
 # note higher CHOL and HDL in males, also LDL but less so
 
 #look at raw data cholesterol traits
 #log scaling is helpful
-x11()
+graphics.open()
 pairs(log(phenotypes[,c("LDL","HDL","CHOL")]),upper.panel=panel.cor,diag.panel=panel.hist)
 #normally LDL is computed trait
-x11()
+graphics.open()
 qplot(CHOL-HDL, LDL, data=phenotypes)
-x11()
+graphics.open()
 qplot(LDL+HDL, CHOL, data=phenotypes)		
 #LDL appears to be directly measured here
 #ask Mark about this
 
 #look at transformed cholesterol traits
-x11()
+graphics.open()
 pairs(f2g$pheno[,c("LDL","HDL","CHOL")],	upper.panel=panel.cor,diag.panel=panel.hist)
 #all three are positively correlated
 #HDL and CHOL are tightly correlated 
@@ -85,15 +63,15 @@ pc.chol$loadings
 # comp 3 is the difference HDL vs CHOL - a computed LDL
 
 #default plot is "scree" tells us how important each component is
-x11()
+graphics.open()
 plot(pc.chol)
 
 #biplots show us the data in rotated coordinates
-x11()
+graphics.open()
 biplot(pc.chol)
-x11()
+graphics.open()
 biplot(pc.chol,choices=c(1,3))
-x11()
+graphics.open()
 biplot(pc.chol,choices=c(2,3))
 
 #add PCs to our pheno data
@@ -120,7 +98,7 @@ save(list="f2g.perm1a", file="f2g_perm1a.Rdata")
 f2g.scan1a <- scanone(f2g, pheno.col=4:6, addcovar=sex, method="hk")
 
 #plot the genome scans
-x11()
+graphics.open()
 par(mfrow=c(3,1))
 plot(f2g.scan1a,lodcolumn=1)
 add.threshold(f2g.scan1a, perms=f2g.perm1a, alpha=0.05,lty="dashed",lwd=2,col="red")
@@ -134,7 +112,7 @@ plot(f2g.scan1a,lodcolumn=3)
 add.threshold(f2g.scan1a, perms=f2g.perm1a, alpha=0.05,lty="dashed",lwd=2,col="red")
 add.threshold(f2g.scan1a, perms=f2g.perm1a, alpha=0.63,lty="dashed",lwd=2,col="green")
 ###
-x11()
+graphics.open()
 par(mfrow=c(3,1))
 plot(f2g.scan1a,lodcolumn=4)
 add.threshold(f2g.scan1a, perms=f2g.perm1a, alpha=0.05,lty="dashed",lwd=2,col="red")
@@ -162,12 +140,12 @@ lodint(f2g.scan1a,17,lodcolumn=3)
 #rs6358703  17 14.61075 
 
 #effect plot
-x11()
+graphics.open()
 plotPXG(f2g, find.marker(f2g,17,13.41), pheno.col="CHOL")
 # BTBR is recessive low  == B6 is dominant high
 
 #look at other peaks for CHOL and break out by sex
-x11()
+graphics.open()
 par(mfrow=c(1,3))
 effectplot(f2g, pheno.col="CHOL", mname1="Sex",mark1=sex,
 	mname2 = find.marker(f2g,7,19.14),ylim=c(-0.9,0.7))
@@ -191,7 +169,7 @@ f2g.scan1b <- scanone(f2g, pheno.col=4:9, intcovar=sex, method="hk")
 #
 
 #plot the genome scans
-x11()
+graphics.open()
 par(mfrow=c(3,1))
 plot(f2g.scan1b, lodcolumn=1)
 add.threshold(f2g.scan1b, perms=f2g.perm1a, alpha=0.05,lty="dashed",lwd=2,col="red")
@@ -205,7 +183,7 @@ plot(f2g.scan1b, lodcolumn=3)
 add.threshold(f2g.scan1b, perms=f2g.perm1a, alpha=0.05,lty="dashed",lwd=2,col="red")
 add.threshold(f2g.scan1b, perms=f2g.perm1a, alpha=0.63,lty="dashed",lwd=2,col="green")
 #
-x11()
+graphics.open()
 par(mfrow=c(3,1))
 plot(f2g.scan1b, lodcolumn=4)
 add.threshold(f2g.scan1b, perms=f2g.perm1a, alpha=0.05,lty="dashed",lwd=2,col="red")
@@ -248,11 +226,11 @@ f2g <- calc.genoprob(f2g, step=2, stepwidth="fixed", map.function="c-f", err=0.0
 load(file="f2g_scan2a.Rdata")
 
 #plot
-x11()
+graphics.open()
 plot(f2g.scan2a)
-x11()
+graphics.open()
 plot(f2g.scan2a,chr=c(5,7,12,17))
-x11()
+graphics.open()
 plot(f2g.scan2a,chr=c(5,7,12,17),upper="cond-int",lower="cond-add")
 
 #report
@@ -264,7 +242,7 @@ summary(f2g.scan2a, allpairs=FALSE)
 f2g <- sim.geno(f2g,step=2)
 
 # effect plot
-x11()
+graphics.open()
 par(mfrow=c(2,2))
 effectplot(f2g, pheno.col="CHOL", mname1=find.marker(f2g,5,34.26),
 	ylim=c(-1.4,0.8),main="",xlab="Chr 5 @ 34cM")
@@ -301,7 +279,7 @@ load(file="f2g_perm1c.Rdata")
 f2g.scan1c <- scanone(f2g, pheno.col="CHOL", addcovar=ac, method="hk")
 
 #plot the genome scan
-x11()
+graphics.open()
 plot(f2g.scan1c)
 add.threshold(f2g.scan1c, perms=f2g.perm1c, 
 	alpha=0.05,lty="dashed",lwd=2,col="red")

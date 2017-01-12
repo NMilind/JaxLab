@@ -3,7 +3,7 @@
 ## Date: November 20 2016                      ##
 #################################################
 
-runScanOne <- function(params, file.name) {
+runScanOne <- function(params, file.name, perms=1000) {
   
   #################################################
   ## CROSS SETUP (ADIPOSE)                       ##
@@ -32,7 +32,7 @@ runScanOne <- function(params, file.name) {
   
   # Permute through the cross to create baseline LOD score levels
   if (!file.exists(paste("data/", file.name, sep=""))) {
-    perms <- scanone(f2g, pheno.col=4, addcovar=sex, method="hk", n.perm=1000, perm.Xsp=TRUE)
+    perms <- scanone(f2g, pheno.col=4, addcovar=sex, method="hk", n.perm=perms, perm.Xsp=TRUE)
     save(file=paste("data/", file.name, sep=""), perms)
   }
   else {
@@ -43,7 +43,7 @@ runScanOne <- function(params, file.name) {
   scan1 <- scanone(f2g, pheno.col=4, addcovar=sex, method="hk")
   
   # Plot the LOD scan with thresholds from the permutations
-  x11()
+  graphics.open()
   plot(scan1, lodcolumn=1, main="LOD for Variation across Mouse Genome")
   add.threshold(scan1, perms=perms, alpha=0.05, lty="dashed", lwd=1, col="green")
   add.threshold(scan1, perms=perms, alpha=0.10, lty="dashed", lwd=1, col="orange")
@@ -56,8 +56,8 @@ runScanOne <- function(params, file.name) {
   # Tabulate and print LOD peaks where alpha=0.63
   print(summary(scan1, perms=perms, alpha=0.63, format="tabByCol", ci.function="lodint"))
   
-  for (i in seq(length(major.peaks)-1)) {
-    x11()
+  for (i in seq(nrow(major.peaks))) {
+    graphics.open()
     chr <- major.peaks[i,1]
     ci <- bayesint(scan1, chr=chr, prob=0.95)
     plot(scan1, chr=chr, lodcolumn=1, main=paste("Confidence Interval Chr", chr, sep=""))

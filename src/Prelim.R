@@ -1,28 +1,11 @@
 ### PRELIMINARY ANALYSIS
 
-# Load Libraries
-library(qtl)
-library(ggplot2)
-library(qtlnet)
+source("src/configuration.R")
 
 # INSTALL QTLNET
 # source("https://bioconductor.org/biocLite.R")
 # biocLite("graph")
 # biocLite("pcalg")
-
-# Clear environmental variables
-rm(list=ls())
-
-# Load important functions
-setwd("src")
-source("important_func.R")
-setwd("..")
-
-# Load the BTBR Dataset
-setwd("data")
-load("BTBR.clean.data.Rdata")
-setwd("..")
-ls()
 
 # The summary of the cross
 summary(f2g)
@@ -78,9 +61,9 @@ names(f2g$pheno)
 graphics.off()
 
 # Pair-Wise plot of all the information
-x11()
+quartz()
 pairs(cbind(adipose.rz[,geneExps], (phenotypes[,phenos])), main="Adipose", labels=c(names(geneExps), names(phenos)), upper.panel=panel.cor, diag.panel=panel.hist)
-x11()
+quartz()
 pairs(cbind(liver.rz[,geneExps], (phenotypes[,phenos])), main="Liver", labels=c(names(geneExps), names(phenos)), upper.panel=panel.cor, diag.panel=panel.hist)
 
 # Pair-Wise plots using proper log transforms
@@ -183,13 +166,13 @@ for (i in 5:length(f2g$pheno)) {
   col <- i - 3
   f2g.scanAdd <- scanone(f2g, pheno.col=4, addcovar=f2g$pheno[,i], method="hk")
   f2g.scanInt <- scanone(f2g, pheno.col=4, intcovar=f2g$pheno[,i], method="hk")
-  #x11()
+  #quartz()
   #par(mfrow=c(3,1))
   #plot(f2g.scan1, lodcolumn=1, main="FBN1")
   #plot(f2g.scanAdd, lodcolumn=1, main=paste("FBN1 with Additive Covariate", names(f2g$pheno)[i]))
   #plot(f2g.scanInt, lodcolumn=1, main=paste("FBN1 with Interactive Covariate", names(f2g$pheno)[i]))
   #par(mfrow=c(1,1))
-  #x11()
+  #quartz()
   par(mfrow=c(3,1))
   plot(f2g.scan1, lodcolumn=1, main="FBN1")
   add.threshold(f2g.scan1, perms=PERMS[,1], alpha=0.05, lty="dashed", lwd=2, col="red")
@@ -250,7 +233,7 @@ for (i in 5:length(f2g$pheno)) {
   if (col == 7) {
     chrs <- c("9", "16", "X")
   }
-  x11()
+  quartz()
   par(mfrow=c(3,1))
   plot(f2g.scan1, lodcolumn=1, main="FBN1", chr=chrs)
   add.threshold(f2g.scan1, perms=PERMS[,1], alpha=0.05, lty="dashed", lwd=2, col="red")
@@ -269,66 +252,66 @@ for (i in 5:length(f2g$pheno)) {
 
 graphics.off()
 ### Common FBN1 Chr3 and Chr7 Peaks
-x11()
+quartz()
 par(mfrow=c(1,2))
 plotPXG(f2g, find.marker(f2g, 3, 49.12), pheno.col="FBN1", main="Chr3 Peak")
 plotPXG(f2g, find.marker(f2g, 7, 6.14), pheno.col="FBN1", main="Chr7 Peak")
 par(mfrow=c(1,1))
 ### SIRT1 Interactive ChrX Peak
-x11()
+quartz()
 plotPXG(f2g, find.marker(f2g, "X", 7.98), pheno.col="FBN1", main="SIRT1 Interactive ChrX Peak")
 ### PIK3CG Interactive Chr1 and Chr12 Peaks
-x11()
+quartz()
 par(mfrow=c(1,2))
 plotPXG(f2g, find.marker(f2g, 1, 78.64), pheno.col="FBN1", main="PIK3CG Interactive Chr1 Peak")
 plotPXG(f2g, find.marker(f2g, 12, 21.24), pheno.col="FBN1", main="PIK3CG Interactive Chr12 Peak")
 par(mfrow=c(1,1))
 ### NR1H3 Interactive Chr1, Chr5, and ChrX Peaks
-x11()
+quartz()
 par(mfrow=c(1,3)) 
 plotPXG(f2g, find.marker(f2g, 1, 74.64), pheno.col="FBN1", main="NR1H3 Interactive Chr1 Peak")
 plotPXG(f2g, find.marker(f2g, 5, 3.80), pheno.col="FBN1", main="NR1H3 Interactive Chr5 Peak")
 plotPXG(f2g, find.marker(f2g, "X", 28.30), pheno.col="FBN1", main="NR1H3 Interactive ChrX Peak")
 par(mfrow=c(1,1))
 ### NCOR2 Interactive Chr9, Chr14, and Chr19 Peaks
-x11()
+quartz()
 par(mfrow=c(1,3))
 plotPXG(f2g, find.marker(f2g, 9, 36.00), pheno.col="FBN1", main="NCOR2 Interactive Chr9 Peak")
 plotPXG(f2g, find.marker(f2g, 14, 30.92), pheno.col="FBN1", main="NCOR2 Interactive Chr14 Peak")
 plotPXG(f2g, find.marker(f2g, 19, 25.56), pheno.col="FBN1", main="NCOR2 Interactive Chr19 Peak")
 par(mfrow=c(1,1))
 ### SREBF1 Interactive Chr1 and Chr9 Peaks
-x11()
+quartz()
 par(mfrow=c(1,2))
 plotPXG(f2g, find.marker(f2g, 1, 88.35), pheno.col="FBN1", main="SREBF1 Interactive Chr1 Peak")
 plotPXG(f2g, find.marker(f2g, 9, 47.29), pheno.col="FBN1", main="SREBF1 Interactive Chr9 Peak")
 par(mfrow=c(1,1))
 
-x11()
+quartz()
 par(mfrow=c(1,2))
 effectplot(f2g, pheno.col="FBN1", mname1=find.marker(f2g, 3, 49.12), main="FBN1 Chr3 Common Peak")
 effectplot(f2g, pheno.col="FBN1", mname1=find.marker(f2g, 7, 6.14), main="FBN1 Chr7 Common Peak")
 par(mfrow=c(1,1))
-x11()
+quartz()
 effectplot(f2g, pheno.col="FBN1", mname1=find.marker(f2g, "X", 7.98), main="SIRT1 Interactive ChrX Peak")
-x11()
+quartz()
 par(mfrow=c(1,2))
 effectplot(f2g, pheno.col="FBN1", mname1=find.marker(f2g, 1, 78.64), main="PIK3CG Interactive Chr1 Peak")
 effectplot(f2g, pheno.col="FBN1", mname1=find.marker(f2g, 12, 21.24), main="PIK3CG Interactive Chr12 Peak")
 par(mfrow=c(1,1))
-x11()
+quartz()
 par(mfrow=c(1,3)) 
 effectplot(f2g, pheno.col="FBN1", mname1=find.marker(f2g, 1, 74.64), main="NR1H3 Interactive Chr1 Peak")
 effectplot(f2g, pheno.col="FBN1", mname1=find.marker(f2g, 5, 3.80), main="NR1H3 Interactive Chr5 Peak")
 effectplot(f2g, pheno.col="FBN1", mname1=find.marker(f2g, "X", 28.30), main="NR1H3 Interactive ChrX Peak")
 par(mfrow=c(1,1))
-x11()
+quartz()
 par(mfrow=c(1,3))
 effectplot(f2g, pheno.col="FBN1", mname1=find.marker(f2g, 9, 36.00), main="NCOR2 Interactive Chr9 Peak")
 effectplot(f2g, pheno.col="FBN1", mname1=find.marker(f2g, 14, 30.92), main="NCOR2 Interactive Chr14 Peak")
 effectplot(f2g, pheno.col="FBN1", mname1=find.marker(f2g, 19, 25.56), main="NCOR2 Interactive Chr19 Peak")
 par(mfrow=c(1,1))
-x11()
+quartz()
 par(mfrow=c(1,2))
 effectplot(f2g, pheno.col="FBN1", mname1=find.marker(f2g, 1, 88.35), main="SREBF1 Interactive Chr1 Peak")
 effectplot(f2g, pheno.col="FBN1", mname1=find.marker(f2g, 9, 47.29), main="SREBF1 Interactive Chr9 Peak")
