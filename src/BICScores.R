@@ -73,6 +73,8 @@ triple.fit <- function(X, Y, Q) {
   print("The factor by which the best model is better than the rest")
   print(max(strengths) / strengths)
   
+  return(data.frame(cbind(scores, strengths * 100, max(strengths) / strengths, deltas)))
+  
   # References
   # [1] Burnham, K. P., and D. R. Anderson. 2002. Model selection and multimodel inference: a practical information-theoretic approach. 
   #     Second edition. Springer, New York, USA.
