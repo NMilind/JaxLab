@@ -79,3 +79,4 @@ triple.fit <- function(X, Y, Q) {
   # [2] Anderson, D. R. 2008. Model based inference in the life sciences: a primer on evidence.
   #     Springer, New York, USA.
 }
+#swag
