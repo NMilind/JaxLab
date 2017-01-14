@@ -54,26 +54,32 @@ triple.fit <- function(X, Y, Q) {
   bic.complex <- BIC(lm(X~Q)) + BIC(lm(Y~Q+X))
   
   # Print out the scores from each model
-  print("BIC Scores of each model")
+  #print("BIC Scores of each model")
   scores <- c(bic.independent, bic.reactive, bic.causal, bic.complex)
   names(scores) <- c("independent", "reactive", "causal", "complex")
-  print(scores)
+  #print(scores)
   
   # Make lowest BIC score 0 and linearize all other scores accordingly to calculate Delta values
   deltas <- scores - min(scores)
+  
+  # Print delta values
+  #print("Delta values of BIC Scores - should be larger than 10 for significance")
+  #print(deltas)
   
   # Estimate the strength of evidence for each model
   strengths <- exp(-0.5 * deltas) / sum(exp(-0.5 * deltas))
   
   # Print out the probabilities of each model being the likely explanation for the data
-  print("Probability of each model explaining the data")
-  print(strengths * 100)
+  #print("Probability of each model explaining the data")
+  #print(strengths * 100)
   
   # Print out how many more times likely the best model is
-  print("The factor by which the best model is better than the rest")
-  print(max(strengths) / strengths)
+  #print("The factor by which the best model is better than the rest")
+  #print(max(strengths) / strengths)
   
-  return(data.frame(cbind(scores, strengths * 100, max(strengths) / strengths, deltas)))
+  bic.data <- data.frame(cbind(scores, strengths * 100, max(strengths) / strengths, deltas))
+  colnames(bic.data) <- c("scores", "probability", "factor", "deltas")
+  return(bic.data)
   
   # References
   # [1] Burnham, K. P., and D. R. Anderson. 2002. Model selection and multimodel inference: a practical information-theoretic approach. 

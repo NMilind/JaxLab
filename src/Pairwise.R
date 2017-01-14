@@ -19,7 +19,7 @@ pairs.simple <- function(data, genes, main="Pair Matrix Scan") {
   names(f2g$pheno)
   
   # Scatterplot Matrices
-  quartz()
+  graphics.open()
   pairs(f2g$pheno[,4:length(f2g$pheno)], main=main, labels=genes, upper.panel=panel.cor, diag.panel=panel.hist)
 }
 pairs.double <- function(data1, genes1, data2, genes2, main="Pair Matrix Scan") {
@@ -35,7 +35,7 @@ pairs.double <- function(data1, genes1, data2, genes2, main="Pair Matrix Scan") 
   names(f2g$pheno)
   
   # Scatterplot Matrices
-  quartz()
+  graphics.open()
   pairs(f2g$pheno[,4:length(f2g$pheno)], main=main, labels=c(genes1, genes2), upper.panel=panel.cor, diag.panel=panel.hist)
 }
 pairs.phenos.simple <- function(data.g, genes, data.p, phenos, main="Pair Matrix Scan") {
@@ -51,7 +51,7 @@ pairs.phenos.simple <- function(data.g, genes, data.p, phenos, main="Pair Matrix
   names(f2g$pheno)
   
   # Scatterplot Matrices
-  quartz()
+  graphics.open()
   pairs(f2g$pheno[,4:length(f2g$pheno)], main=main, upper.panel=panel.cor, diag.panel=panel.hist)
 }
 pairs.phenos.double <- function(data1.g, genes1, data2.g, genes2, data.p, phenos, main="Pair Matrix Scan") {
@@ -70,7 +70,7 @@ pairs.phenos.double <- function(data1.g, genes1, data2.g, genes2, data.p, phenos
   names(f2g$pheno)
   
   # Scatterplot Matrices
-  quartz()
+  graphics.open()
   pairs(f2g$pheno[,4:length(f2g$pheno)], main=main, upper.panel=panel.cor, diag.panel=panel.hist)
 }
 
