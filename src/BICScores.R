@@ -87,3 +87,96 @@ triple.fit <- function(X, Y, Q) {
   # [2] Anderson, D. R. 2008. Model based inference in the life sciences: a primer on evidence.
   #     Springer, New York, USA.
 }
+
+# This model was tested by our primary reference paper
+model.one <- function() {
+  
+  FBN1.adipose <- gene.exp("Fbn1", adipose.rz)
+  GLU.4wk <- log(clinical("GLU.4wk", phenotypes))
+  INS.4wk <- log(clinical("INS.4wk", phenotypes))
+  
+  # Remove any NA values from the data
+  indx <- sort(unique(c(which(is.na(FBN1.adipose)), which(is.na(GLU.4wk)), which(is.na(INS.4wk)))))
+  FBN1.adipose <- FBN1.adipose[-indx]
+  GLU.4wk <- GLU.4wk[-indx]
+  INS.4wk <- INS.4wk[-indx]
+  print(paste("Removed ", length(indx), " rows with NA values from data.", sep=""))
+  
+  bic.score.1 <- BIC(lm(GLU.4wk~FBN1.adipose)) + BIC(lm(INS.4wk~GLU.4wk)) # Linear
+  bic.score.2 <- BIC(lm(GLU.4wk~FBN1.adipose)) + BIC(lm(INS.4wk~GLU.4wk+FBN1.adipose)) # Non-Li.near
+  bic.score.3 <- BIC(lm(GLU.4wk~FBN1.adipose+INS.4wk)) + BIC(lm(INS.4wk~FBN1.adipose)) # Inverse Non-Linear
+  bic.score.4 <- BIC(lm(GLU.4wk~FBN1.adipose)) + BIC(lm(INS.4wk~FBN1.adipose)) # Independent
+  
+  scores <- c(bic.score.1, bic.score.2, bic.score.3, bic.score.4)
+  names(scores) <- c("linear", "non.linear", "inverse.non.linear", "independent")
+  
+  deltas <- scores - min(scores)
+  
+  strengths <- exp(-0.5 * deltas) / sum(exp(-0.5 * deltas))
+  
+  bic.data <- data.frame(cbind(scores, strengths * 100, max(strengths) / strengths, deltas))
+  colnames(bic.data) <- c("scores", "probability", "factor", "deltas")
+  return(bic.data)
+}
+
+# This model suggests that Fbn1 affects Glucose, which affects Insulin
+# Furthermore, Fbn1 also affects the expression of GPR's
+model.two <- function() {
+  
+  FBN1.adipose <- gene.exp("Fbn1", adipose.rz)
+  GLU.4wk <- log(clinical("GLU.4wk", phenotypes))
+  INS.4wk <- log(clinical("INS.4wk", phenotypes))
+  GPR12.liver <- gene.exp("Gpr12", liver.rz)
+  GPRC5B.liver <- gene.exp("Gprc5b", liver.rz)
+  
+  # Remove any NA values from the data
+  indx.gpr12 <- sort(unique(c(which(is.na(FBN1.adipose)), which(is.na(GLU.4wk)), which(is.na(INS.4wk)), which(is.na(GPR12.liver)))))
+  FBN1.adipose <- FBN1.adipose[-indx.gpr12]
+  GLU.4wk <- GLU.4wk[-indx.gpr12]
+  INS.4wk <- INS.4wk[-indx.gpr12]
+  GPR12.liver <- GPR12.liver[-indx.gpr12]
+  print(paste("Removed ", length(indx.gpr12), " rows with NA values from Gpr12-related data.", sep=""))
+  
+  bic.score.1 <- BIC(lm(GPR12.liver~FBN1.adipose)) + BIC(lm(GLU.4wk~FBN1.adipose)) + BIC(lm(INS.4wk~GLU.4wk))
+  
+  FBN1.adipose <- gene.exp("Fbn1", adipose.rz)
+  GLU.4wk <- log(clinical("GLU.4wk", phenotypes))
+  INS.4wk <- log(clinical("INS.4wk", phenotypes))
+  GPR21.liver <- gene.exp("Rabgap1,Gpr21", liver.rz)
+  
+  # Remove any NA values from the data
+  indx.gpr21 <- sort(unique(c(which(is.na(FBN1.adipose)), which(is.na(GLU.4wk)), which(is.na(INS.4wk)), which(is.na(GPR21.liver)))))
+  FBN1.adipose <- FBN1.adipose[-indx.gpr21]
+  GLU.4wk <- GLU.4wk[-indx.gpr21]
+  INS.4wk <- INS.4wk[-indx.gpr21]
+  GPR21.liver <- GPR21.liver[-indx.gpr21]
+  print(paste("Removed ", length(indx.gpr21), " rows with NA values from Gpr21-related data.", sep=""))
+  
+  bic.score.2 <- BIC(lm(GPR21.liver~FBN1.adipose)) + BIC(lm(GLU.4wk~FBN1.adipose)) + BIC(lm(INS.4wk~GLU.4wk))  
+  
+  FBN1.adipose <- gene.exp("Fbn1", adipose.rz)
+  GLU.4wk <- log(clinical("GLU.4wk", phenotypes))
+  INS.4wk <- log(clinical("INS.4wk", phenotypes))
+  GPRC5B.liver <- gene.exp("Gprc5b", liver.rz)
+  
+  # Remove any NA values from the data
+  indx.gprc5b <- sort(unique(c(which(is.na(FBN1.adipose)), which(is.na(GLU.4wk)), which(is.na(INS.4wk)), which(is.na(GPRC5B.liver)))))
+  FBN1.adipose <- FBN1.adipose[-indx.gprc5b]
+  GLU.4wk <- GLU.4wk[-indx.gprc5b]
+  INS.4wk <- INS.4wk[-indx.gprc5b]
+  GPRC5B.liver <- GPRC5B.liver[-indx.gprc5b]
+  print(paste("Removed ", length(indx.gprc5b), " rows with NA values from Gprc5b-related data.", sep=""))
+  
+  bic.score.3 <- BIC(lm(GPRC5B.liver~FBN1.adipose)) + BIC(lm(GLU.4wk~FBN1.adipose)) + BIC(lm(INS.4wk~GLU.4wk))
+  
+  scores <- c(bic.score.1, bic.score.2, bic.score.3)
+  names(scores) <- c("Gpr12", "Gpr21", "Gprc5b")
+  
+  deltas <- scores - min(scores)
+  
+  strengths <- exp(-0.5 * deltas) / sum(exp(-0.5 * deltas))
+  
+  bic.data <- data.frame(cbind(scores, strengths * 100, max(strengths) / strengths, deltas))
+  colnames(bic.data) <- c("scores", "probability", "factor", "deltas")
+  return(bic.data)
+}
