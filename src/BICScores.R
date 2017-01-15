@@ -120,14 +120,13 @@ model.one <- function() {
 }
 
 # This model suggests that Fbn1 affects Glucose, which affects Insulin
-# Furthermore, Fbn1 also affects the expression of GPR's
+# Furthermore, Fbn1 also affects the expression of GPCRs
 model.two <- function() {
   
   FBN1.adipose <- gene.exp("Fbn1", adipose.rz)
   GLU.4wk <- log(clinical("GLU.4wk", phenotypes))
   INS.4wk <- log(clinical("INS.4wk", phenotypes))
   GPR12.liver <- gene.exp("Gpr12", liver.rz)
-  GPRC5B.liver <- gene.exp("Gprc5b", liver.rz)
   
   # Remove any NA values from the data
   indx.gpr12 <- sort(unique(c(which(is.na(FBN1.adipose)), which(is.na(GLU.4wk)), which(is.na(INS.4wk)), which(is.na(GPR12.liver)))))
@@ -180,3 +179,214 @@ model.two <- function() {
   colnames(bic.data) <- c("scores", "probability", "factor", "deltas")
   return(bic.data)
 }
+
+# This model suggests that glucose levels influence Fbn1 expression and insulin
+# Furthermore, glucose levels also influence gene expression of GPCRs
+model.three <- function() {
+  
+  FBN1.adipose <- gene.exp("Fbn1", adipose.rz)
+  GLU.4wk <- log(clinical("GLU.4wk", phenotypes))
+  INS.4wk <- log(clinical("INS.4wk", phenotypes))
+  GPR12.liver <- gene.exp("Gpr12", liver.rz)
+  
+  # Remove any NA values from the data
+  indx.gpr12 <- sort(unique(c(which(is.na(FBN1.adipose)), which(is.na(GLU.4wk)), which(is.na(INS.4wk)), which(is.na(GPR12.liver)))))
+  FBN1.adipose <- FBN1.adipose[-indx.gpr12]
+  GLU.4wk <- GLU.4wk[-indx.gpr12]
+  INS.4wk <- INS.4wk[-indx.gpr12]
+  GPR12.liver <- GPR12.liver[-indx.gpr12]
+  print(paste("Removed ", length(indx.gpr12), " rows with NA values from Gpr12-related data.", sep=""))
+  
+  bic.score.1 <- BIC(lm(FBN1.adipose~GLU.4wk)) + BIC(lm(INS.4wk~FBN1.adipose)) + BIC(lm(GPR12.liver~FBN1.adipose))
+  
+  FBN1.adipose <- gene.exp("Fbn1", adipose.rz)
+  GLU.4wk <- log(clinical("GLU.4wk", phenotypes))
+  INS.4wk <- log(clinical("INS.4wk", phenotypes))
+  GPR21.liver <- gene.exp("Rabgap1,Gpr21", liver.rz)
+  
+  # Remove any NA values from the data
+  indx.gpr21 <- sort(unique(c(which(is.na(FBN1.adipose)), which(is.na(GLU.4wk)), which(is.na(INS.4wk)), which(is.na(GPR21.liver)))))
+  FBN1.adipose <- FBN1.adipose[-indx.gpr21]
+  GLU.4wk <- GLU.4wk[-indx.gpr21]
+  INS.4wk <- INS.4wk[-indx.gpr21]
+  GPR21.liver <- GPR21.liver[-indx.gpr21]
+  print(paste("Removed ", length(indx.gpr21), " rows with NA values from Gpr21-related data.", sep=""))
+  
+  bic.score.2 <- BIC(lm(FBN1.adipose~GLU.4wk)) + BIC(lm(INS.4wk~FBN1.adipose)) + BIC(lm(GPR21.liver~FBN1.adipose))
+  
+  FBN1.adipose <- gene.exp("Fbn1", adipose.rz)
+  GLU.4wk <- log(clinical("GLU.4wk", phenotypes))
+  INS.4wk <- log(clinical("INS.4wk", phenotypes))
+  GPRC5B.liver <- gene.exp("Gprc5b", liver.rz)
+  
+  # Remove any NA values from the data
+  indx.gprc5b <- sort(unique(c(which(is.na(FBN1.adipose)), which(is.na(GLU.4wk)), which(is.na(INS.4wk)), which(is.na(GPRC5B.liver)))))
+  FBN1.adipose <- FBN1.adipose[-indx.gprc5b]
+  GLU.4wk <- GLU.4wk[-indx.gprc5b]
+  INS.4wk <- INS.4wk[-indx.gprc5b]
+  GPRC5B.liver <- GPRC5B.liver[-indx.gprc5b]
+  print(paste("Removed ", length(indx.gprc5b), " rows with NA values from Gprc5b-related data.", sep=""))
+  
+  bic.score.3 <- BIC(lm(FBN1.adipose~GLU.4wk)) + BIC(lm(INS.4wk~FBN1.adipose)) + BIC(lm(GPRC5B.liver~FBN1.adipose))
+  
+  scores <- c(bic.score.1, bic.score.2, bic.score.3)
+  names(scores) <- c("Gpr12", "Gpr21", "Gprc5b")
+  
+  deltas <- scores - min(scores)
+  
+  strengths <- exp(-0.5 * deltas) / sum(exp(-0.5 * deltas))
+  
+  bic.data <- data.frame(cbind(scores, strengths * 100, max(strengths) / strengths, deltas))
+  colnames(bic.data) <- c("scores", "probability", "factor", "deltas")
+  return(bic.data)
+}
+
+# This model compares Gprc5b between Model Two and Model Three
+model.four <- function() {
+  
+  FBN1.adipose <- gene.exp("Fbn1", adipose.rz)
+  GLU.4wk <- log(clinical("GLU.4wk", phenotypes))
+  INS.4wk <- log(clinical("INS.4wk", phenotypes))
+  
+  # Remove any NA values from the data
+  indx <- sort(unique(c(which(is.na(FBN1.adipose)), which(is.na(GLU.4wk)), which(is.na(INS.4wk)))))
+  FBN1.adipose <- FBN1.adipose[-indx]
+  GLU.4wk <- GLU.4wk[-indx]
+  INS.4wk <- INS.4wk[-indx]
+  print(paste("Removed ", length(indx), " rows with NA values from data.", sep=""))
+  
+  bic.score.1 <- BIC(lm(GLU.4wk~FBN1.adipose)) + BIC(lm(INS.4wk~GLU.4wk))
+  
+  FBN1.adipose <- gene.exp("Fbn1", adipose.rz)
+  GLU.4wk <- log(clinical("GLU.4wk", phenotypes))
+  INS.4wk <- log(clinical("INS.4wk", phenotypes))
+  GPRC5B.liver <- gene.exp("Gprc5b", liver.rz)
+  
+  # Remove any NA values from the data
+  indx.gprc5b <- sort(unique(c(which(is.na(FBN1.adipose)), which(is.na(GLU.4wk)), which(is.na(INS.4wk)), which(is.na(GPRC5B.liver)))))
+  FBN1.adipose <- FBN1.adipose[-indx.gprc5b]
+  GLU.4wk <- GLU.4wk[-indx.gprc5b]
+  INS.4wk <- INS.4wk[-indx.gprc5b]
+  GPRC5B.liver <- GPRC5B.liver[-indx.gprc5b]
+  
+  bic.score.2 <- BIC(lm(GLU.4wk~FBN1.adipose)) + BIC(lm(INS.4wk~GLU.4wk)) + BIC(lm(GPRC5B.liver~FBN1.adipose))
+  bic.score.3 <- BIC(lm(FBN1.adipose~GLU.4wk)) + BIC(lm(INS.4wk~FBN1.adipose)) + BIC(lm(GPRC5B.liver~GLU.4wk))
+  
+  scores <- c(bic.score.1, bic.score.2, bic.score.3)
+  names(scores) <- c("independent", "Gprc5b.1", "Gprc5b.2")
+  
+  deltas <- scores - min(scores)
+  
+  strengths <- exp(-0.5 * deltas) / sum(exp(-0.5 * deltas))
+  
+  bic.data <- data.frame(cbind(scores, strengths * 100, max(strengths) / strengths, deltas))
+  colnames(bic.data) <- c("scores", "probability", "factor", "deltas")
+  return(bic.data)
+}
+
+# This model suggests that Glucose is caused by a combination of Fbn1 and GPCR expression
+model.five <- function() {
+  
+  FBN1.adipose <- gene.exp("Fbn1", adipose.rz)
+  GLU.4wk <- log(clinical("GLU.4wk", phenotypes))
+  INS.4wk <- log(clinical("INS.4wk", phenotypes))
+  GPR12.liver <- gene.exp("Gpr12", liver.rz)
+  
+  # Remove any NA values from the data
+  indx.gpr12 <- sort(unique(c(which(is.na(FBN1.adipose)), which(is.na(GLU.4wk)), which(is.na(INS.4wk)), which(is.na(GPR12.liver)))))
+  FBN1.adipose <- FBN1.adipose[-indx.gpr12]
+  GLU.4wk <- GLU.4wk[-indx.gpr12]
+  INS.4wk <- INS.4wk[-indx.gpr12]
+  GPR12.liver <- GPR12.liver[-indx.gpr12]
+  
+  bic.score.1 <- BIC(lm(GLU.4wk~FBN1.adipose+GPR12.liver)) + BIC(lm(INS.4wk~GLU.4wk))
+  bic.score.2 <- BIC(lm(GLU.4wk~FBN1.adipose+GPR12.liver)) + BIC(lm(INS.4wk~GLU.4wk+FBN1.adipose))
+  
+  FBN1.adipose <- gene.exp("Fbn1", adipose.rz)
+  GLU.4wk <- log(clinical("GLU.4wk", phenotypes))
+  INS.4wk <- log(clinical("INS.4wk", phenotypes))
+  GPR21.liver <- gene.exp("Rabgap1,Gpr21", liver.rz)
+  
+  # Remove any NA values from the data
+  indx.gpr21 <- sort(unique(c(which(is.na(FBN1.adipose)), which(is.na(GLU.4wk)), which(is.na(INS.4wk)), which(is.na(GPR21.liver)))))
+  FBN1.adipose <- FBN1.adipose[-indx.gpr21]
+  GLU.4wk <- GLU.4wk[-indx.gpr21]
+  INS.4wk <- INS.4wk[-indx.gpr21]
+  GPR21.liver <- GPR21.liver[-indx.gpr21]
+  
+  bic.score.3 <- BIC(lm(GLU.4wk~FBN1.adipose+GPR21.liver)) + BIC(lm(INS.4wk~GLU.4wk))
+  bic.score.4 <- BIC(lm(GLU.4wk~FBN1.adipose+GPR21.liver)) + BIC(lm(INS.4wk~GLU.4wk+FBN1.adipose))
+  
+  FBN1.adipose <- gene.exp("Fbn1", adipose.rz)
+  GLU.4wk <- log(clinical("GLU.4wk", phenotypes))
+  INS.4wk <- log(clinical("INS.4wk", phenotypes))
+  GPRC5B.liver <- gene.exp("Gprc5b", liver.rz)
+  
+  # Remove any NA values from the data
+  indx.gprc5b <- sort(unique(c(which(is.na(FBN1.adipose)), which(is.na(GLU.4wk)), which(is.na(INS.4wk)), which(is.na(GPRC5B.liver)))))
+  FBN1.adipose <- FBN1.adipose[-indx.gprc5b]
+  GLU.4wk <- GLU.4wk[-indx.gprc5b]
+  INS.4wk <- INS.4wk[-indx.gprc5b]
+  GPRC5B.liver <- GPRC5B.liver[-indx.gprc5b]
+  
+  bic.score.5 <- BIC(lm(GLU.4wk~FBN1.adipose+GPRC5B.liver)) + BIC(lm(INS.4wk~GLU.4wk))
+  bic.score.6 <- BIC(lm(GLU.4wk~FBN1.adipose+GPRC5B.liver)) + BIC(lm(INS.4wk~GLU.4wk+FBN1.adipose))
+  
+  scores <- c(bic.score.1, bic.score.2, bic.score.3, bic.score.4, bic.score.5, bic.score.6)
+  names(scores) <- c("Gpr12", "Gpr12.adv", "Gpr21", "Gpr21.adv", "Gprc5b", "Gprc5b.adv")
+  
+  deltas <- scores - min(scores)
+  
+  strengths <- exp(-0.5 * deltas) / sum(exp(-0.5 * deltas))
+  
+  bic.data <- data.frame(cbind(scores, strengths * 100, max(strengths) / strengths, deltas))
+  colnames(bic.data) <- c("scores", "probability", "factor", "deltas")
+  return(bic.data)
+}
+
+model.test <- function() {
+  
+  FBN1.adipose <- gene.exp("Fbn1", adipose.rz)
+  GLU.4wk <- log(clinical("GLU.4wk", phenotypes))
+  INS.4wk <- log(clinical("INS.4wk", phenotypes))
+  GPRC5B.liver <- gene.exp("Gprc5b", liver.rz)
+  
+  # Remove any NA values from the data
+  indx <- sort(unique(c(which(is.na(FBN1.adipose)), which(is.na(GLU.4wk)), which(is.na(INS.4wk)), which(is.na(GPRC5B.liver)))))
+  FBN1.adipose <- FBN1.adipose[-indx]
+  GLU.4wk <- GLU.4wk[-indx]
+  INS.4wk <- INS.4wk[-indx]
+  GPRC5B.liver <- GPRC5B.liver[-indx]
+  print(paste("Removed ", length(indx), " rows with NA values from data.", sep=""))
+  
+  A <- FBN1.adipose
+  B <- GLU.4wk
+  C <- INS.4wk
+  D <- GPRC5B.liver
+  
+  #bic.score.1 <- BIC(lm(GLU.4wk~FBN1.adipose)) + BIC(lm(GLU.4wk~GPRC5B.liver))
+  #bic.score.2 <- BIC(lm(GLU.4wk~FBN1.adipose+GPRC5B.liver)) 
+  #bic.score.3 <- BIC(lm(GLU.4wk~FBN1.adipose+GPRC5B.liver)) + BIC(lm(GPRC5B.liver~FBN1.adipose))
+  #bic.score.4 <- BIC(lm(GLU.4wk~FBN1.adipose+GPRC5B.liver)) + BIC(lm(FBN1.adipose~GPRC5B.liver))
+  
+  bic.score.1 <- BIC(lm(B~A)) + BIC(lm(B~D)) + BIC(lm(C~B))
+  #bic.score.2 <- BIC(lm(B~A+D))
+  bic.score.2 <- BIC(lm(B~A+D)) + BIC(lm(C~B))
+  
+  scores <- c(bic.score.1, bic.score.2)
+  names(scores) <- c("independent", "linear")
+  
+  deltas <- scores - min(scores)
+  
+  strengths <- exp(-0.5 * deltas) / sum(exp(-0.5 * deltas))
+  
+  bic.data <- data.frame(cbind(scores, strengths * 100, max(strengths) / strengths, deltas))
+  colnames(bic.data) <- c("scores", "probability", "factor", "deltas")
+  return(bic.data)
+}
+
+round(model.one(), digits=2)
+round(model.two(), digits=2)
+round(model.three(), digits=2)
+round(model.four(), digits=2)
+round(model.five(), digits=2)
