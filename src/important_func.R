@@ -133,8 +133,3 @@ triple.fit <- function(X,Y,Q){
   names(scores) <- c("independent","reactive","causal","complex")
   scores
 }
-
-gene.data.exists <- function(symbol) {
-  
-  return(length(annot$gene_symbol[which(annot$gene_symbol==symbol)]) > 0)
-}
