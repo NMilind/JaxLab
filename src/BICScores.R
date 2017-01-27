@@ -103,7 +103,7 @@ model.one <- function() {
   print(paste("Removed ", length(indx), " rows with NA values from data.", sep=""))
   
   bic.score.1 <- BIC(lm(GLU.4wk~FBN1.adipose)) + BIC(lm(INS.4wk~GLU.4wk)) # Linear
-  bic.score.2 <- BIC(lm(GLU.4wk~FBN1.adipose)) + BIC(lm(INS.4wk~GLU.4wk+FBN1.adipose)) # Non-Li.near
+  bic.score.2 <- BIC(lm(GLU.4wk~FBN1.adipose)) + BIC(lm(INS.4wk~GLU.4wk+FBN1.adipose)) # Non-Linear
   bic.score.3 <- BIC(lm(GLU.4wk~FBN1.adipose+INS.4wk)) + BIC(lm(INS.4wk~FBN1.adipose)) # Inverse Non-Linear
   bic.score.4 <- BIC(lm(GLU.4wk~FBN1.adipose)) + BIC(lm(INS.4wk~FBN1.adipose)) # Independent
   
@@ -298,6 +298,7 @@ model.five <- function() {
   GLU.4wk <- GLU.4wk[-indx.gpr12]
   INS.4wk <- INS.4wk[-indx.gpr12]
   GPR12.liver <- GPR12.liver[-indx.gpr12]
+  print(paste("Removed ", length(indx.gpr12), " rows with NA values from Gpr12-related data.", sep=""))
   
   bic.score.1 <- BIC(lm(GLU.4wk~FBN1.adipose+GPR12.liver)) + BIC(lm(INS.4wk~GLU.4wk))
   bic.score.2 <- BIC(lm(GLU.4wk~FBN1.adipose+GPR12.liver)) + BIC(lm(INS.4wk~GLU.4wk+FBN1.adipose))
@@ -313,6 +314,7 @@ model.five <- function() {
   GLU.4wk <- GLU.4wk[-indx.gpr21]
   INS.4wk <- INS.4wk[-indx.gpr21]
   GPR21.liver <- GPR21.liver[-indx.gpr21]
+  print(paste("Removed ", length(indx.gpr21), " rows with NA values from Gpr21-related data.", sep=""))
   
   bic.score.3 <- BIC(lm(GLU.4wk~FBN1.adipose+GPR21.liver)) + BIC(lm(INS.4wk~GLU.4wk))
   bic.score.4 <- BIC(lm(GLU.4wk~FBN1.adipose+GPR21.liver)) + BIC(lm(INS.4wk~GLU.4wk+FBN1.adipose))
@@ -328,6 +330,7 @@ model.five <- function() {
   GLU.4wk <- GLU.4wk[-indx.gprc5b]
   INS.4wk <- INS.4wk[-indx.gprc5b]
   GPRC5B.liver <- GPRC5B.liver[-indx.gprc5b]
+  print(paste("Removed ", length(indx.gprc5b), " rows with NA values from Gprc5b-related data.", sep=""))
   
   bic.score.5 <- BIC(lm(GLU.4wk~FBN1.adipose+GPRC5B.liver)) + BIC(lm(INS.4wk~GLU.4wk))
   bic.score.6 <- BIC(lm(GLU.4wk~FBN1.adipose+GPRC5B.liver)) + BIC(lm(INS.4wk~GLU.4wk+FBN1.adipose))
