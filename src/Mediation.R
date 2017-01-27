@@ -42,34 +42,13 @@ genotype <- function(chr, pos) {
   }
 }
 
-# Run a scanone on Fbn1
-Fbn1 <- gene.exp(gene.name="Fbn1", data.set=adipose.rz)
-runScanOne(params=Fbn1, file.name="FBN1.adipose.perms.RData", perms=100)
-
-#[1] "MouseNum" "Sex"      "pgm"      "params"  
-#           chr   pos ci.low ci.high  lod
-#rs13477374   3 49.12  44.55    65.1 4.40
-#c7.loc4      7  6.14   2.14    15.9 4.07
-#           chr   pos ci.low ci.high  lod
-#c1.loc75     1 76.64   1.64    86.6 2.83
-#rs13477374   3 49.12  44.55    65.1 4.40
-#c7.loc4      7  6.14   2.14    15.9 4.07
-#cX.loc5      X  8.60   3.60    28.3 2.17
-#[1] "Chromosome  3"
-#[1] 46.54620 63.65573
-#[1] "Chromosome  7"
-#[1]  2.1403 15.1403
-
-# The QTL on Chromosome 3, the effector
-QTL3 <- genotype(chr=3, pos=49.12)
-# Glucose is affected
-GLU.8wk <- log(clinical(clin.name="GLU.8wk", data.set=phenotypes))
-# Fbn1 (Asprosin) is the mediator 
-Fbn1 <- gene.exp(gene.name="Fbn1", data.set=adipose.rz)
-# Sex is the covariate
-Sex <- as.numeric(f2g$pheno[,"Sex"]) - 1
+Fbn1 <- gene.exp("Fbn1", data.set=adipose.rz)
+GLU.4wk <- log(clinical(clin.name="GLU.4wk", data.set=phenotypes))
+Gpr21 <- gene.exp(gene.name="Rabgap1,Gpr21", data.set=liver.rz)
 
 # Remove all NA values from the data
+indx <- sort(unique(c(which(is.na()))))
+
 indx <- sort(unique(c(which(is.na(QTL3)), which(is.na(GLU.8wk)), which(is.na(Fbn1)))))
 QTL3 <- QTL3[-indx]
 GLU.8wk <- GLU.8wk[-indx]
@@ -90,4 +69,3 @@ med.out <- mediate(med.fit, out.fit, treat="QTL3", mediator="Fbn1", robustSE=TRU
 # Print summary and view scores
 summary(med.out)
 plot(med.out)
-
