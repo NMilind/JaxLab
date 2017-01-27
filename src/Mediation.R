@@ -42,30 +42,102 @@ genotype <- function(chr, pos) {
   }
 }
 
-Fbn1 <- gene.exp("Fbn1", data.set=adipose.rz)
+Fbn1 <- gene.exp(gene.name="Fbn1", data.set=adipose.rz)
 GLU.4wk <- log(clinical(clin.name="GLU.4wk", data.set=phenotypes))
+INS.10wk <- log(clinical(clin.name="INS.10wk", data.set=phenotypes))
+HOMA.10wk <- (clinical(clin.name="HOMA.10wk", data.set=phenotypes.rz))
 Gpr21 <- gene.exp(gene.name="Rabgap1,Gpr21", data.set=liver.rz)
+Gprc5b <- gene.exp(gene.name="Gprc5b", data.set=liver.rz)
+Akt3 <- gene.exp(gene.name="Akt3", data.set=liver.rz)
+Prkaca <- gene.exp(gene.name="Prkaca", data.set=liver.rz)
+Sex <- as.numeric(f2g$pheno[,"Sex"]) - 1
 
 # Remove all NA values from the data
-indx <- sort(unique(c(which(is.na()))))
-
-indx <- sort(unique(c(which(is.na(QTL3)), which(is.na(GLU.8wk)), which(is.na(Fbn1)))))
-QTL3 <- QTL3[-indx]
-GLU.8wk <- GLU.8wk[-indx]
+indx <- sort(unique(c(
+  which(is.na(Fbn1)), 
+  which(is.na(GLU.4wk)), 
+  which(is.na(INS.10wk)), 
+  which(is.na(HOMA.10wk)),
+  which(is.na(Gpr21)), 
+  which(is.na(Gprc5b)), 
+  which(is.na(Prkaca)), 
+  which(is.na(Akt3))))
+)
 Fbn1 <- Fbn1[-indx]
+GLU.4wk <- GLU.4wk[-indx]
+INS.10wk <- INS.10wk[-indx]
+HOMA.10wk <- HOMA.10wk[-indx]
+Gpr21 <- Gpr21[-indx]
+Gprc5b <- Gprc5b[-indx]
+Akt3 <- Akt3[-indx]
+Prkaca <- Prkaca[-indx]
 Sex <- Sex[-indx]
 
 # Create a data frame to house the data we will work with
-model.data <- data.frame(QTL3, GLU.8wk, Fbn1, Sex)
+model.data <- data.frame(Fbn1, GLU.4wk, INS.10wk, HOMA.10wk, Gpr21, Gprc5b, Akt3, Prkaca, Sex)
+
+affected <- HOMA.10wk
+
+par(mfrow=c(2,2))
+
+#################################################
+## Gpr21 with PKA                              ##
+#################################################
 
 # This is the fit model for the mediator
-med.fit <- lm(Fbn1 ~ Sex + QTL3, data=model.data)
+med.fit <- lm(Prkaca ~ Sex + Gpr21, data=model.data)
 # This is the fit model for the affected
-out.fit <- glm(GLU.8wk ~ Sex + Fbn1 + QTL3, data=model.data)
+out.fit <- glm(affected ~ Sex + Gpr21 + Prkaca, data=model.data)
 
 # The output of the mediation analysis
-med.out <- mediate(med.fit, out.fit, treat="QTL3", mediator="Fbn1", robustSE=TRUE, sims=100)
+med.out <- mediate(med.fit, out.fit, treat="Gpr21", mediator="Prkaca", robustSE=TRUE, sims=100)
 
-# Print summary and view scores
 summary(med.out)
-plot(med.out)
+plot(med.out, main="Gpr21 with PKA")
+
+#################################################
+## Gpr21 with PKB                              ##
+#################################################
+
+# This is the fit model for the mediator
+med.fit <- lm(Akt3 ~ Sex + Gpr21, data=model.data)
+# This is the fit model for the affected
+out.fit <- glm(affected ~ Sex + Gpr21 + Akt3, data=model.data)
+
+# The output of the mediation analysis
+med.out <- mediate(med.fit, out.fit, treat="Gpr21", mediator="Akt3", robustSE=TRUE, sims=100)
+
+summary(med.out)
+plot(med.out, main="Gpr21 with PKB")
+
+#################################################
+## Gprc5b with PKA                             ##
+#################################################
+
+# This is the fit model for the mediator
+med.fit <- lm(Prkaca ~ Sex + Gprc5b, data=model.data)
+# This is the fit model for the affected
+out.fit <- glm(affected ~ Sex + Gprc5b + Prkaca, data=model.data)
+
+# The output of the mediation analysis
+med.out <- mediate(med.fit, out.fit, treat="Gprc5b", mediator="Prkaca", robustSE=TRUE, sims=100)
+
+summary(med.out)
+plot(med.out, main="Gprc5b with PKA")
+
+#################################################
+## Gprc5b with PKB                             ##
+#################################################
+
+# This is the fit model for the mediator
+med.fit <- lm(Akt3 ~ Sex + Gprc5b, data=model.data)
+# This is the fit model for the affected
+out.fit <- glm(affected ~ Sex + Gprc5b + Akt3, data=model.data)
+
+# The output of the mediation analysis
+med.out <- mediate(med.fit, out.fit, treat="Gprc5b", mediator="Akt3", robustSE=TRUE, sims=100)
+
+summary(med.out)
+plot(med.out, main="Gprc5b with PKB")
+
+par(mfrow=c(1,1))
