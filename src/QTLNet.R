@@ -3,7 +3,7 @@
 ## Date: November 20 2016                      ##
 #################################################
 
-runQTLNet <- function(genes.adipose=c(), genes.liver=c(), phenos=c()) {
+runQTLNet <- function(genes.adipose=c(), genes.liver=c(), genes.hypo=c(), genes.islet=c(), phenos=c()) {
   
   #################################################
   ## ENVIRONMENTAL SETUP                         ##
@@ -23,8 +23,14 @@ runQTLNet <- function(genes.adipose=c(), genes.liver=c(), phenos=c()) {
   for (i in 1:length(genes.liver)) {
     f2g$pheno <- cbind(f2g$pheno, liver.rz[,annot$a_gene_id[which(annot$gene_symbol==genes.liver[i])]])
   }
+  for (i in 1:length(genes.hypo)) {
+    f2g$pheno <- cbind(f2g$pheno, hypo.rz[,annot$a_gene_id[which(annot$gene_symbol==genes.hypo[i])]])
+  }
+  for (i in 1:length(genes.islet)) {
+    f2g$pheno <- cbind(f2g$pheno, islet.rz[,annot$a_gene_id[which(annot$gene_symbol==genes.islet[i])]])
+  }
   f2g$pheno <- cbind(f2g$pheno, phenotypes.rz[,phenos])
-  names(f2g$pheno) <- c(c("MouseNum", "Sex", "pgm"), genes.adipose, genes.liver, phenos)
+  names(f2g$pheno) <- c(c("MouseNum", "Sex", "pgm"), genes.adipose, genes.liver, genes.hypo, genes.islet, phenos)
   names(f2g$pheno)
   
   #################################################
