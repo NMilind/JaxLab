@@ -178,3 +178,13 @@ pairs.double(data1=liver.rz, genes1=c("Fbn1"), data2=adipose.rz, genes2=genes, m
 # Since Insulin competitevly inhibits asprosin action, there is also the likelihood of a tyrosine-kinase receptor
 # We identify Class A G-Protein Coupled Receptors (Orphans) that are correlated with Fbn1
 # Results also suggest that the pathways either overlap or a tyrosine-kinase receptor may also affect the situation
+
+# Pancreatic / Islet Tissue
+genes <- c("Npy1r", "Npy5r", "Tm6sf2", "Gpr114")
+pairs.double(data1=adipose.rz, genes1=c("Fbn1"), data2=islet.rz, genes2=genes, main="Islet Gene Expression")
+pairs.phenos.simple(data.g=islet.rz, genes=genes, data.p=phenotypes.rz, phenos=c("INS.10wk", "GLU.4wk", "HOMA.8wk"))
+
+# Chromosome 2
+genes <- c("Pcsk2", "Rrbp1")
+pairs.double(data1=liver.rz, genes1=c("Fbn1"), data2=islet.rz, genes2=genes, main="Islet Gene Expression")
+pairs.phenos.simple(data.g=islet.rz, genes=genes, data.p=phenotypes.rz, phenos=c("INS.10wk", "GLU.4wk", "HOMA.8wk"))
