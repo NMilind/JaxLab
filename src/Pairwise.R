@@ -185,6 +185,7 @@ pairs.double(data1=adipose.rz, genes1=c("Fbn1"), data2=islet.rz, genes2=genes, m
 pairs.phenos.simple(data.g=islet.rz, genes=genes, data.p=phenotypes.rz, phenos=c("INS.10wk", "GLU.4wk", "HOMA.8wk"))
 
 # Chromosome 2
-genes <- c("Pcsk2", "Rrbp1")
+genes <- c("Pcsk2", "Rrbp1", "Ralgapa2", "Insm1", "Foxa2", "Acss1", "Trib3")
 pairs.double(data1=liver.rz, genes1=c("Fbn1"), data2=islet.rz, genes2=genes, main="Islet Gene Expression")
 pairs.phenos.simple(data.g=islet.rz, genes=genes, data.p=phenotypes.rz, phenos=c("INS.10wk", "GLU.4wk", "HOMA.8wk"))
+pairs.double(data1=liver.rz, genes1=c("Fbn1", "Gprc5b", "Rabgap1,Gpr21", "Trib3"), data2=islet.rz, genes2=c("Trib3"))
