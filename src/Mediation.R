@@ -42,7 +42,8 @@ genotype <- function(chr, pos) {
   }
 }
 
-Fbn1 <- gene.exp(gene.name="Fbn1", data.set=adipose.rz)
+#Fbn1 <- gene.exp(gene.name="Fbn1", data.set=adipose.rz)
+Fbn1 <- genotype(chr=3, pos=49.5)
 GLU.4wk <- log(clinical(clin.name="GLU.4wk", data.set=phenotypes))
 INS.10wk <- log(clinical(clin.name="INS.10wk", data.set=phenotypes))
 HOMA.10wk <- (clinical(clin.name="HOMA.10wk", data.set=phenotypes.rz))
@@ -85,9 +86,9 @@ par(mfrow=c(2,2))
 #################################################
 
 # This is the fit model for the mediator
-med.fit <- lm(Prkaca ~ Sex + Gpr21, data=model.data)
+med.fit <- lm(Prkaca ~ Sex + Gpr21 + Fbn1, data=model.data)
 # This is the fit model for the affected
-out.fit <- glm(affected ~ Sex + Gpr21 + Prkaca, data=model.data)
+out.fit <- glm(affected ~ Sex + Gpr21 + Prkaca + Fbn1, data=model.data)
 
 # The output of the mediation analysis
 med.out <- mediate(med.fit, out.fit, treat="Gpr21", mediator="Prkaca", robustSE=TRUE, sims=100)
@@ -100,9 +101,9 @@ plot(med.out, main="Gpr21 with PKA")
 #################################################
 
 # This is the fit model for the mediator
-med.fit <- lm(Akt3 ~ Sex + Gpr21, data=model.data)
+med.fit <- lm(Akt3 ~ Sex + Gpr21 + Fbn1, data=model.data)
 # This is the fit model for the affected
-out.fit <- glm(affected ~ Sex + Gpr21 + Akt3, data=model.data)
+out.fit <- glm(affected ~ Sex + Gpr21 + Akt3 + Fbn1, data=model.data)
 
 # The output of the mediation analysis
 med.out <- mediate(med.fit, out.fit, treat="Gpr21", mediator="Akt3", robustSE=TRUE, sims=100)
@@ -115,9 +116,9 @@ plot(med.out, main="Gpr21 with PKB")
 #################################################
 
 # This is the fit model for the mediator
-med.fit <- lm(Prkaca ~ Sex + Gprc5b, data=model.data)
+med.fit <- lm(Prkaca ~ Sex + Gprc5b + Fbn1, data=model.data)
 # This is the fit model for the affected
-out.fit <- glm(affected ~ Sex + Gprc5b + Prkaca, data=model.data)
+out.fit <- glm(affected ~ Sex + Gprc5b + Prkaca + Fbn1, data=model.data)
 
 # The output of the mediation analysis
 med.out <- mediate(med.fit, out.fit, treat="Gprc5b", mediator="Prkaca", robustSE=TRUE, sims=100)
@@ -130,9 +131,9 @@ plot(med.out, main="Gprc5b with PKA")
 #################################################
 
 # This is the fit model for the mediator
-med.fit <- lm(Akt3 ~ Sex + Gprc5b, data=model.data)
+med.fit <- lm(Akt3 ~ Sex + Gprc5b + Fbn1, data=model.data)
 # This is the fit model for the affected
-out.fit <- glm(affected ~ Sex + Gprc5b + Akt3, data=model.data)
+out.fit <- glm(affected ~ Sex + Gprc5b + Akt3 + Fbn1, data=model.data)
 
 # The output of the mediation analysis
 med.out <- mediate(med.fit, out.fit, treat="Gprc5b", mediator="Akt3", robustSE=TRUE, sims=100)

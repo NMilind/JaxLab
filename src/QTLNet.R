@@ -3,7 +3,7 @@
 ## Date: November 20 2016                      ##
 #################################################
 
-runQTLNet <- function(genes.adipose=c(), genes.liver=c(), genes.hypo=c(), genes.islet=c(), phenos=c()) {
+runQTLNet <- function(genes.adipose=c(), genes.liver=c(), genes.hypo=c(), genes.islet=c(), phenos=c(), gene.chrs=c(), gene.pos=c()) {
   
   #################################################
   ## ENVIRONMENTAL SETUP                         ##
@@ -30,7 +30,11 @@ runQTLNet <- function(genes.adipose=c(), genes.liver=c(), genes.hypo=c(), genes.
     f2g$pheno <- cbind(f2g$pheno, islet.rz[,annot$a_gene_id[which(annot$gene_symbol==genes.islet[i])]])
   }
   f2g$pheno <- cbind(f2g$pheno, phenotypes.rz[,phenos])
-  names(f2g$pheno) <- c(c("MouseNum", "Sex", "pgm"), genes.adipose, genes.liver, genes.hypo, genes.islet, phenos)
+  for (i in 1:length(gene.chrs)) {
+    f2g$pheno <- cbind(f2g$pheno, genotype(chr=gene.chrs[i], pos=gene.pos[i]))
+  }
+  vecs = paste(paste(rep("Chr", length(gene.chrs)), gene.chrs, sep=""), gene.pos, sep="Pos")
+  names(f2g$pheno) <- c(c("MouseNum", "Sex", "pgm"), genes.adipose, genes.liver, genes.hypo, genes.islet, phenos, vecs)
   names(f2g$pheno)
   
   #################################################
@@ -147,3 +151,6 @@ loadQTLOutput <- function(loadfile="data/net-data/output.RData") {
   print(summary(output))
   plot(output)
 }
+
+runQTLNet(genes.liver=c("Gprc5b"), phenos=c("HOMA.10wk"), gene.chrs=c(2,3), gene.pos=c(61.38,49.5))
+runQTLNet(genes.liver=c("Gpr21"), phenos=c("HOMA.10wk"), gene.chrs=c(2,3), gene.pos=c(61.38,49.5))
