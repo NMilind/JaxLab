@@ -193,3 +193,8 @@ pairs.double(data1=liver.rz, genes1=c("Fbn1", "Gprc5b", "Rabgap1,Gpr21", "Trib3"
 pairs.phenos.simple(data.g=adipose.rz, genes=c("Amy1", "Agl", "Fabp2", "Cyp2u1", "Fbn1"), data.p=phenotypes.rz, phenos=c("HOMA.10wk"))
 pairs.phenos.simple(data.g=adipose.rz, genes=c("Lipe", "Cyp2s1", "Cyp2b10", "Foxa3", "Apoc4", "Apoc2", "Apoe", "Gsk3a", "Fbn1"), data.p=phenotypes.rz, phenos=c("HOMA.10wk"))
 pairs.phenos.simple(data.g=adipose.rz, genes=c("Amy1", "Cyp2s1", "Apoc4", "Apoc2", "Apoe", "Fbn1"), data.p=phenotypes.rz, phenos=c("HOMA.10wk"))
+
+## Prelim Studies
+pairs.phenos.simple(genes=c("Fbn1", "Bgn", "Col1a1", "Col1a2", "Col6a1"), data.g=adipose.rz, phenos=c("HOMA.8wk", "INS.10wk"), data.p=phenotypes.rz)
+pairs.phenos.simple(genes=c("Fbn1", "Col6a2", "Col16a1", "Efemp2", "Fkbp10"), data.g=adipose.rz, phenos=c("HOMA.8wk", "INS.10wk"), data.p=phenotypes.rz)
+pairs.phenos.simple(genes=c("Fbn1", "Mrgprf", "Nfatc4", "Timp1", "Timp2"), data.g=adipose.rz, phenos=c("HOMA.8wk", "INS.10wk"), data.p=phenotypes.rz)
