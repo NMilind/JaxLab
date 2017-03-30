@@ -40,7 +40,7 @@ runQTLNet <- function(genes.adipose=c(), genes.liver=c(), genes.hypo=c(), genes.
   names(f2g$pheno)
   
   #################################################
-  ## SETUP WORKING DiRECTORY                     ##
+  ## SETUP WORKING DIRECTORY                     ##
   #################################################
   
   do.call(file.remove, list(list.files("data/net-data/", full.names=TRUE)))
@@ -156,4 +156,4 @@ loadQTLOutput <- function(loadfile="data/net-data/output.RData") {
 
 #runQTLNet(genes.liver=c("Gprc5b"), phenos=c("HOMA.10wk"), gene.chrs=c(2,3), gene.pos=c(61.38,49.5))
 #runQTLNet(genes.liver=c("Gpr21"), phenos=c("HOMA.10wk"), gene.chrs=c(2,3), gene.pos=c(61.38,49.5))
-runQTLNet(genes.adipose=c("Amy1", "Fbn1"), phenos=c("INS.10wk"))
+#runQTLNet(genes.adipose=c("Amy1", "Fbn1"), phenos=c("INS.10wk"))

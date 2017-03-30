@@ -1,6 +1,6 @@
 #################################################
 ## Author: Hannah Gahagan and Nikhil Milind    ##
-## Date: November 20 2016                      ##
+## Date: March 20 2016                         ##
 #################################################
 
 source("src/configuration.R")
@@ -10,7 +10,7 @@ source("src/ScanOne.R")
 ## FULL SCRUB                                  ##
 #################################################
 
-THRESHOLD <- 0.35
+THRESHOLD <- 0.30
 INS.THRESHOLD <- 0.20
 HOMA.THRESHOLD <- 0.20
 FAT.THRESHOLD <- 0.20
@@ -35,7 +35,7 @@ for (i in 1:nrow(annot)) {
     correlation.ins <- abs(cor(x=data.ins, y=data2))
     correlation.homa <- abs(cor(x=data.homa, y=data2))
     correlation.fat <- abs(cor(x=data.fat, y=data2))
-    if ((correlation >= THRESHOLD && correlation < 0.40) && (correlation.ins >= INS.THRESHOLD && correlation.homa >= HOMA.THRESHOLD && correlation.fat >= FAT.THRESHOLD)) {
+    if ((correlation >= THRESHOLD && correlation < 0.35) && (correlation.ins >= INS.THRESHOLD && correlation.homa >= HOMA.THRESHOLD && correlation.fat >= FAT.THRESHOLD)) {
       print(paste("Gene: ", gene, " | Correlation: ", correlation, " | Insulin: ", correlation.ins, " | HOMA: ", correlation.homa, " | Fat.wt: ", correlation.fat, sep=""))
       genes <- c(genes, paste(gene))
     }
@@ -47,7 +47,7 @@ for (i in 1:nrow(annot)) {
 #################################################
 
 CSV <- "data/chr-7-genes.csv"
-PDF <- "report/paper/genes/Ins-0.35-ins-0.20-homa-0.20-fat-0.20.pdf"
+PDF <- "report/paper/genes/Ins-0.30-ins-0.20-homa-0.20-fat-0.20.pdf"
 THRESHOLD <- 0.20
 
 chrs <- read.csv(CSV)

@@ -51,6 +51,8 @@ Gpr21 <- gene.exp(gene.name="Rabgap1,Gpr21", data.set=liver.rz)
 Gprc5b <- gene.exp(gene.name="Gprc5b", data.set=liver.rz)
 Akt3 <- gene.exp(gene.name="Akt3", data.set=liver.rz)
 Prkaca <- gene.exp(gene.name="Prkaca", data.set=liver.rz)
+Tgfb2 <- gene.exp(gene.name="Tgfb2", data.set=adipose.rz)
+Timp2 <- gene.exp(gene.name="Timp2", data.set=adipose.rz)
 Sex <- as.numeric(f2g$pheno[,"Sex"]) - 1
 
 # Remove all NA values from the data
@@ -140,5 +142,69 @@ med.out <- mediate(med.fit, out.fit, treat="Gprc5b", mediator="Akt3", robustSE=T
 
 summary(med.out)
 plot(med.out, main="Gprc5b with PKB")
+
+par(mfrow=c(1,1))
+
+#################################################
+## TIMP2 and NFATC4                            ##
+#################################################
+
+#Fbn1 <- gene.exp(gene.name="Fbn1", data.set=adipose.rz)
+Fbn1 <- genotype(chr=3, pos=49.5)
+INS.10wk <- log(clinical(clin.name="INS.10wk", data.set=phenotypes))
+Tgfb2 <- gene.exp(gene.name="Tgfb2", data.set=adipose.rz)
+Timp2 <- gene.exp(gene.name="Timp2", data.set=adipose.rz)
+Nfatc4 <- gene.exp(gene.name="Nfatc4", data.set=adipose.rz)
+
+# Remove all NA values from the data
+indx <- sort(unique(c(
+  which(is.na(Fbn1)),
+  which(is.na(INS.10wk)),
+  which(is.na(Tgfb2)),
+  which(is.na(Timp2)),
+  which(is.na(Nfatc4))
+)))
+
+Fbn1 <- Fbn1[-indx]
+INS.10wk <- INS.10wk[-indx]
+Tgfb2 <- Tgfb2[-indx]
+Timp2 <- Timp2[-indx]
+Nfatc4 <- Nfatc4[-indx]
+
+model.data <- data.frame(Fbn1, INS.10wk, Tgfb2, Timp2, Nfatc4)
+
+par(mfrow=c(2,2))
+
+med.fit <- lm(Timp2 ~ Tgfb2 + Fbn1, data=model.data)
+out.fit <- glm(INS.10wk ~ Timp2 + Tgfb2 + Fbn1, data=model.data)
+
+med.out <- mediate(med.fit, out.fit, treat="Tgfb2", mediator="Timp2", robustSE=TRUE, sims=100)
+
+summary(med.out)
+plot(med.out, main="Effect of Tgfb2 on Insulin (10 weeks) mediated by Timp2")
+
+med.fit <- lm(Nfatc4 ~ Tgfb2 + Fbn1, data=model.data)
+out.fit <- glm(INS.10wk ~ Nfatc4 + Tgfb2 + Fbn1, data=model.data)
+
+med.out <- mediate(med.fit, out.fit, treat="Tgfb2", mediator="Nfatc4", robustSE=TRUE, sims=100)
+
+summary(med.out)
+plot(med.out, main="Effect of Tgfb2 on Insulin (10 weeks) mediated by Nfatc4")
+
+med.fit <- lm(Timp2 ~ Tgfb2 + Fbn1, data=model.data)
+out.fit <- glm(INS.10wk ~ Timp2 + Tgfb2 + Fbn1, data=model.data)
+
+med.out <- mediate(med.fit, out.fit, treat="Fbn1", mediator="Timp2", robustSE=TRUE, sims=100)
+
+summary(med.out)
+plot(med.out, main="Effect of Fbn1 on Insulin (10 weeks) mediated by Timp2")
+
+med.fit <- lm(Nfatc4 ~ Tgfb2 + Fbn1, data=model.data)
+out.fit <- glm(INS.10wk ~ Nfatc4 + Tgfb2 + Fbn1, data=model.data)
+
+med.out <- mediate(med.fit, out.fit, treat="Fbn1", mediator="Nfatc4", robustSE=TRUE, sims=100)
+
+summary(med.out)
+plot(med.out, main="Effect of Fbn1 on Insulin (10 weeks) mediated by Nfatc4")
 
 par(mfrow=c(1,1))

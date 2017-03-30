@@ -198,3 +198,18 @@ pairs.phenos.simple(data.g=adipose.rz, genes=c("Amy1", "Cyp2s1", "Apoc4", "Apoc2
 pairs.phenos.simple(genes=c("Fbn1", "Bgn", "Col1a1", "Col1a2", "Col6a1"), data.g=adipose.rz, phenos=c("HOMA.8wk", "INS.10wk"), data.p=phenotypes.rz)
 pairs.phenos.simple(genes=c("Fbn1", "Col6a2", "Col16a1", "Efemp2", "Fkbp10"), data.g=adipose.rz, phenos=c("HOMA.8wk", "INS.10wk"), data.p=phenotypes.rz)
 pairs.phenos.simple(genes=c("Fbn1", "Mrgprf", "Nfatc4", "Timp1", "Timp2"), data.g=adipose.rz, phenos=c("HOMA.8wk", "INS.10wk"), data.p=phenotypes.rz)
+# Of Interest: Bgn, Efemp2, Fkbp10, Mrgprf, Nfatc4, Timp2
+pairs.phenos.simple(genes=c("Bgn", "Efemp2", "Fkbp10", "Mrgprf", "Nfatc4", "Timp2"), data.g=adipose.rz, phenos=c("HOMA.8wk", "INS.10wk"), data.p=phenotypes.rz)
+# HOMA.8wk: Efemp2
+# INS.10wk: Bgn, Fkbp10, Mrgprf, Nfatc4, Timp2
+#   Bgn, Mrgprf, and Timp2 show similar function
+#   Fkbp10 shares 4 QTL Peaks with INS.10wk
+#   No direct correlation between Nfatc4 and INS.10wk
+runQTLNet(genes.adipose=c("Nfatc4", "Timp2"), phenos=c("INS.10wk"))
+pairs.phenos.simple(genes=c("Fbn1", "Timp2", "Nfatc4"), data.g=adipose.rz, phenos=c("INS.10wk", "HOMA.8wk"), data.p=phenotypes.rz)
+# TIMP: http://press.endocrine.org/doi/10.1210/en.2010-1029
+# TIMP and BGN: http://www.sciencedirect.com/science/article/pii/S0945053X13001741
+# Nfatc4: https://www.ncbi.nlm.nih.gov/pubmed/16644691?dopt=Abstract
+# Nfatc4: http://mcb.asm.org/content/26/20/7372
+# Nfatc4: http://ajpcell.physiology.org/content/292/5/C1887
+# Nfatc4: http://mcb.asm.org/content/30/12/3126

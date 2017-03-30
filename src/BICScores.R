@@ -353,31 +353,33 @@ model.test <- function() {
   GLU.4wk <- log(clinical("GLU.4wk", phenotypes))
   INS.4wk <- log(clinical("INS.4wk", phenotypes))
   GPRC5B.liver <- gene.exp("Gprc5b", liver.rz)
+  GPR21.liver <- gene.exp("Rabgap1,Gpr21", liver.rz)
+  GPR12.liver <- gene.exp("Gpr12", liver.rz)
   
   # Remove any NA values from the data
-  indx <- sort(unique(c(which(is.na(FBN1.adipose)), which(is.na(GLU.4wk)), which(is.na(INS.4wk)), which(is.na(GPRC5B.liver)))))
+  indx <- sort(unique(c(which(is.na(FBN1.adipose)), which(is.na(GLU.4wk)), which(is.na(INS.4wk)), which(is.na(GPRC5B.liver)), which(is.na(GPR21.liver)), which(is.na(GPR12.liver)))))
   FBN1.adipose <- FBN1.adipose[-indx]
   GLU.4wk <- GLU.4wk[-indx]
   INS.4wk <- INS.4wk[-indx]
   GPRC5B.liver <- GPRC5B.liver[-indx]
+  GPR21.liver <- GPR21.liver[-indx]
+  GPR12.liver <- GPR12.liver[-indx]
   print(paste("Removed ", length(indx), " rows with NA values from data.", sep=""))
   
-  A <- FBN1.adipose
-  B <- GLU.4wk
-  C <- INS.4wk
-  D <- GPRC5B.liver
+  Fbn1 <- Fbn1.adipose
+  Glucose <- GLU.4wk
+  Insulin <- INS.4wk
+  Gprc5b <- GPRC5B.liver
+  Gpr21 <- GPR21.liver
+  Gpr12 <- GPR12.liver
   
-  #bic.score.1 <- BIC(lm(GLU.4wk~FBN1.adipose)) + BIC(lm(GLU.4wk~GPRC5B.liver))
-  #bic.score.2 <- BIC(lm(GLU.4wk~FBN1.adipose+GPRC5B.liver)) 
-  #bic.score.3 <- BIC(lm(GLU.4wk~FBN1.adipose+GPRC5B.liver)) + BIC(lm(GPRC5B.liver~FBN1.adipose))
-  #bic.score.4 <- BIC(lm(GLU.4wk~FBN1.adipose+GPRC5B.liver)) + BIC(lm(FBN1.adipose~GPRC5B.liver))
+  bic.score.1 <- BIC(lm(Gpr12~1))
+  bic.score.2 <- BIC(lm(Gpr12~Fbn1))
+  bic.score.3 <- BIC(lm(Gpr12~Glucose))
+  bic.score.4 <- BIC(lm(Gpr12~Insulin))
   
-  bic.score.1 <- BIC(lm(B~A)) + BIC(lm(B~D)) + BIC(lm(C~B))
-  #bic.score.2 <- BIC(lm(B~A+D))
-  bic.score.2 <- BIC(lm(B~A+D)) + BIC(lm(C~B))
-  
-  scores <- c(bic.score.1, bic.score.2)
-  names(scores) <- c("independent", "linear")
+  scores <- c(bic.score.1, bic.score.2, bic.score.3, bic.score.4)
+  names(scores) <- c("null", "fbn1", "glucose", "insulin")
   
   deltas <- scores - min(scores)
   
