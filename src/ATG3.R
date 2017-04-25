@@ -3,7 +3,7 @@
 # Model: 
 # decreased Atg genes -> increased insulin -> higher blood glucose
 rm(list=ls())
-setwd("/Users/gotwals/desktop/BTBR/atg")
+setwd("~/Desktop/JaxLab")
 # Load QTL library to do genome scans.
 library(qtl)
 library(ggplot2)
@@ -288,12 +288,16 @@ which(names(scan_cond)  %in% c("Pdrg1", "Gatm", "Nphp1", "Cds2", "Ino80",  "Dtd1
 f2g <- fill.geno(f2g, method="argmax")
 #
 #create a three level factor Q2 and add to pheno data
-f2g$pheno <- transform(f2g$pheno,Q2 = as.factor(f2g$geno[[2]]$data[,find.marker(f2g, 2, 75.2)]))
-levels(f2g$pheno$Q2) <- c("B","H","R")
+f2g$pheno <- transform(f2g$pheno,Q3 = as.factor(f2g$geno[[3]]$data[,find.marker(f2g, 3, 49.5)]))
+levels(f2g$pheno$Q3) <- c("B","H","R")
 names(f2g$pheno)
 # plot insulin against Pdrg1 expression
 pdrg1_islet <- islet.rz[, annot[grep("Pdrg1", annot$gene1), 1]]
-f2g$pheno <- transform(f2g$pheno, pdrg1_islet)
+gprc5b <- gene.exp("Gprc5b", data.set=adipose.rz)
+gpr21 <- gene.exp("Rabgap1,Gpr21", data.set=adipose.rz)
+INS.10wk <- clinical("INS.10wk", phenotypes.rz)
+PKA <- gene.exp("Prkaca", data.set=adipose.rz)
+f2g$pheno <- cbind(f2g$pheno, gprc5b, gpr21)
 qplot(pdrg1_islet, INS.10wk, color=Q2, shape=Sex, data=f2g$pheno) + geom_smooth(aes(group=Q2), method="lm", se=FALSE)
 # There's reasonably good correlation between genotype classes.
 
@@ -302,20 +306,20 @@ qplot(pdrg1_islet, INS.10wk, color=Q2, shape=Sex, data=f2g$pheno) + geom_smooth(
 # as a mediator of Q2 effect on insulin
 
 ####  i) Insulin is linked to Q2
-anova(lm(INS.10wk ~ Sex + Q2, data = f2g$pheno))
+anova(lm(INS.10wk ~ Sex + Q3 + gprc5b, data = f2g$pheno))
 # significant
 
 ####  ii) Pdrg1 gene expression is linked to Q2
-anova(lm(pdrg1_islet ~ Sex + Q2, data = f2g$pheno))
+anova(lm(PKA ~ Sex + Q3 + gprc5b, data = f2g$pheno))
 # significant
 
 ####  iii) Insulin not linked after accounting for Q2
-anova(lm(INS.10wk ~ Sex + pdrg1_islet + Q2, data = f2g$pheno))
+anova(lm(INS.10wk ~ Sex + PKA + Q3 + gprc5b, data = f2g$pheno))
 # not significant * .
 
 ####  iv) Pdrg1 gene expression is still linked after 
 # accounting for insulin
-anova(lm(pdrg1_islet ~ Sex + INS.10wk + Q2, data = f2g$pheno))
+anova(lm(PKA ~ Sex + INS.10wk + Q3 + gprc5b, data = f2g$pheno))
 # significant ***
 
 # all 4 conditions for a mediator are satisfied
